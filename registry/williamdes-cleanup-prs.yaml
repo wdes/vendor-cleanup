@@ -1,0 +1,2113 @@
+metadata:
+  author: williamdes
+  description: Registry of cleanup PRs (touching .gitattributes) opened over the years.
+  generated_at: '2026-05-21'
+  totals:
+    total_prs: 87
+    merged: 69
+    closed: 11
+    open: 7
+repos:
+- repo: antonioribeiro/google2fa
+  prs:
+  - pr: 236
+    title: Fix .gitattributes
+    state: MERGED
+    url: https://github.com/antonioribeiro/google2fa/pull/236
+    created_at: '2026-03-05'
+    closed_at: '2026-03-17'
+    merged_at: '2026-03-17'
+    additions: 1
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 3628
+    savings_paths:
+    - path: CHANGELOG.md
+      bytes: 3628
+- repo: antonioribeiro/google2fa-qrcode
+  prs:
+  - pr: 29
+    title: Add gitattributes
+    state: MERGED
+    url: https://github.com/antonioribeiro/google2fa-qrcode/pull/29
+    created_at: '2026-03-05'
+    closed_at: '2026-05-08'
+    merged_at: '2026-05-08'
+    additions: 7
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 28201
+    savings_paths:
+    - path: .gitattributes
+      bytes: 214
+    - path: .gitignore
+      bytes: 44
+    - path: .scrutinizer.yml
+      bytes: 946
+    - path: .travis.yml
+      bytes: 869
+    - path: CHANGELOG.md
+      bytes: 1144
+    - path: phpunit.xml
+      bytes: 396
+    - path: tests
+      bytes: 24588
+- repo: Astrotomic/laravel-translatable
+  prs:
+  - pr: 126
+    title: Add .gitattributes to exclude some files from production environments
+    state: MERGED
+    url: https://github.com/Astrotomic/laravel-translatable/pull/126
+    created_at: '2020-02-27'
+    closed_at: '2020-02-27'
+    merged_at: '2020-02-27'
+    additions: 11
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 1674255
+    savings_paths:
+    - path: .github
+      bytes: 8686
+    - path: .gitbook.yaml
+      bytes: 67
+    - path: .gitattributes
+      bytes: 410
+    - path: docs
+      bytes: 1665092
+- repo: atgp/factur-x
+  prs:
+  - pr: 51
+    title: Add .gitattributes to exclude files from composer
+    state: MERGED
+    url: https://github.com/atgp/factur-x/pull/51
+    created_at: '2026-03-25'
+    closed_at: '2026-04-17'
+    merged_at: '2026-04-17'
+    additions: 8
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 55872
+    savings_paths:
+    - path: .github
+      bytes: 1113
+    - path: .gitignore
+      bytes: 154
+    - path: .gitattributes
+      bytes: 234
+    - path: .php-cs-fixer.dist.php
+      bytes: 1218
+    - path: CONTRIBUTING.md
+      bytes: 727
+    - path: phpstan.dist.neon
+      bytes: 215
+    - path: phpunit.xml.dist
+      bytes: 668
+    - path: tests
+      bytes: 51543
+- repo: Bacon/BaconQrCode
+  prs:
+  - pr: 118
+    title: Debian adjustments and project improvements
+    state: MERGED
+    url: https://github.com/Bacon/BaconQrCode/pull/118
+    created_at: '2022-12-07'
+    closed_at: '2022-12-07'
+    merged_at: '2022-12-07'
+    additions: 18
+    deletions: 4
+    changed_files: 4
+    files_touched:
+    - .gitattributes
+    - .github/workflows/ci.yml
+    - composer.json
+    - test/Integration/ImagickRenderingTest.php
+    savings_bytes: 0
+    savings_paths: []
+  - pr: 236
+    title: 'fix: add CLAUDE.md to vendor excludes'
+    state: MERGED
+    url: https://github.com/Bacon/BaconQrCode/pull/236
+    created_at: '2026-04-05'
+    closed_at: '2026-04-05'
+    merged_at: '2026-04-05'
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 2826
+    savings_paths:
+    - path: CLAUDE.md
+      bytes: 2826
+- repo: bdelespierre/laravel-blade-linter
+  prs:
+  - pr: 13
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/bdelespierre/laravel-blade-linter/pull/13
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 2
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: brick/math
+  prs:
+  - pr: 110
+    title: Remove README.md from .gitattributes
+    state: MERGED
+    url: https://github.com/brick/math/pull/110
+    created_at: '2026-03-05'
+    closed_at: '2026-03-05'
+    merged_at: '2026-03-05'
+    additions: 0
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 0
+    savings_paths: []
+- repo: code-lts/WarnockPDF
+  prs:
+  - pr: 4
+    title: Enable phpcs with wdes/coding-standard
+    state: MERGED
+    url: https://github.com/code-lts/WarnockPDF/pull/4
+    created_at: '2021-03-23'
+    closed_at: '2021-03-23'
+    merged_at: '2021-03-23'
+    additions: 202
+    deletions: 47
+    changed_files: 11
+    files_touched:
+    - .gitattributes
+    - .github/workflows/lint-and-analyse.yml
+    - .github/workflows/lint-docs.yml
+    - include/barcodes/datamatrix.php
+    - include/barcodes/pdf417.php
+    - include/barcodes/qrcode.php
+    - include/tcpdf_fonts.php
+    - include/tcpdf_static.php
+    - phpcs.xml.dist
+    - tcpdf.php
+    - tcpdf_import.php
+    savings_bytes: 6350
+    savings_paths:
+    - path: phpcs.xml.dist
+      bytes: 6350
+- repo: composer/class-map-generator
+  prs:
+  - pr: 38
+    title: Ignore phpcs config file
+    state: MERGED
+    url: https://github.com/composer/class-map-generator/pull/38
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: '2026-05-20'
+    additions: 1
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 0
+    savings_paths: []
+- repo: DASPRiD/Enum
+  prs:
+  - pr: 14
+    title: Update .gitattributes after TravisCI -> GH
+    state: MERGED
+    url: https://github.com/DASPRiD/Enum/pull/14
+    created_at: '2023-05-29'
+    closed_at: '2023-08-25'
+    merged_at: '2023-08-25'
+    additions: 3
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 16556
+    savings_paths:
+    - path: .github
+      bytes: 1230
+    - path: test
+      bytes: 14763
+    - path: phpunit.xml.dist
+      bytes: 563
+- repo: dilab/resumable.php
+  prs:
+  - pr: 37
+    title: Backports from my forked version
+    state: MERGED
+    url: https://github.com/dilab/resumable.php/pull/37
+    created_at: '2023-12-16'
+    closed_at: '2023-12-17'
+    merged_at: '2023-12-17'
+    additions: 73
+    deletions: 9
+    changed_files: 6
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    - .gitignore
+    - LICENSE
+    - composer.json
+    - test/src/ResumableTest.php
+    savings_bytes: 1071
+    savings_paths:
+    - path: .gitattributes
+      bytes: 79
+    - path: .gitignore
+      bytes: 71
+    - path: .github
+      bytes: 921
+- repo: DirectoryTree/ImapEngine
+  prs:
+  - pr: 111
+    title: Add phpstand config to .gitattributes
+    state: MERGED
+    url: https://github.com/DirectoryTree/ImapEngine/pull/111
+    created_at: '2025-09-26'
+    closed_at: '2025-09-26'
+    merged_at: '2025-09-26'
+    additions: 2
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 352
+    savings_paths:
+    - path: docker-compose.yml
+      bytes: 261
+    - path: phpstan.neon
+      bytes: 91
+- repo: dompdf/php-font-lib
+  prs:
+  - pr: 125
+    title: Update .gitattributes and remove bower.json + .htaccess
+    state: MERGED
+    url: https://github.com/dompdf/php-font-lib/pull/125
+    created_at: '2023-10-16'
+    closed_at: '2023-12-30'
+    merged_at: '2023-12-30'
+    additions: 3
+    deletions: 27
+    changed_files: 5
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    - .htaccess
+    - bower.json
+    - phpunit.xml.dist
+    savings_bytes: 0
+    savings_paths: []
+  - pr: 155
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/dompdf/php-font-lib/pull/155
+    created_at: '2025-12-31'
+    closed_at: '2026-01-01'
+    merged_at: '2026-01-01'
+    additions: 2
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 972
+    savings_paths:
+    - path: AUTHORS.md
+      bytes: 350
+    - path: phpunit.xml
+      bytes: 622
+- repo: drush-ops/drush
+  prs:
+  - pr: 4539
+    title: Replace abandoned Sami by Doctum
+    state: MERGED
+    url: https://github.com/drush-ops/drush/pull/4539
+    created_at: '2020-08-23'
+    closed_at: '2020-09-25'
+    merged_at: '2020-09-25'
+    additions: 19
+    deletions: 19
+    changed_files: 6
+    files_touched:
+    - .gitattributes
+    - .github/workflows/main.yml
+    - .gitignore
+    - .scenarios.lock/php5/composer.json
+    - composer.json
+    - doctum-config.php
+    savings_bytes: 1268
+    savings_paths:
+    - path: doctum-config.php
+      bytes: 1268
+- repo: erusev/parsedown
+  prs:
+  - pr: 905
+    title: Fix .gitattributes
+    state: CLOSED
+    url: https://github.com/erusev/parsedown/pull/905
+    created_at: '2025-02-17'
+    closed_at: '2025-12-31'
+    merged_at: null
+    additions: 1
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: GermanCoding/Roundcube_TLS_Icon
+  prs:
+  - pr: 5
+    title: Minor project improvements
+    state: MERGED
+    url: https://github.com/GermanCoding/Roundcube_TLS_Icon/pull/5
+    created_at: '2022-07-07'
+    closed_at: '2022-07-08'
+    merged_at: '2022-07-08'
+    additions: 33
+    deletions: 12
+    changed_files: 6
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    - README.md
+    - composer.json
+    - localization/fr_FR.inc
+    - tls_icon.php
+    savings_bytes: 237
+    savings_paths:
+    - path: .gitignore
+      bytes: 46
+    - path: .gitattributes
+      bytes: 191
+  - pr: 7
+    title: Require Roundcube >= 1.3.0, PHP >=5.4 and apply some coding standard cleanup
+    state: MERGED
+    url: https://github.com/GermanCoding/Roundcube_TLS_Icon/pull/7
+    created_at: '2022-07-09'
+    closed_at: '2022-07-13'
+    merged_at: '2022-07-13'
+    additions: 41
+    deletions: 21
+    changed_files: 5
+    files_touched:
+    - .editorconfig
+    - .gitattributes
+    - README.md
+    - composer.json
+    - tls_icon.php
+    savings_bytes: 158
+    savings_paths:
+    - path: .editorconfig
+      bytes: 158
+  - pr: 8
+    title: Add tests and a CI
+    state: MERGED
+    url: https://github.com/GermanCoding/Roundcube_TLS_Icon/pull/8
+    created_at: '2022-07-09'
+    closed_at: '2022-07-13'
+    merged_at: '2022-07-13'
+    additions: 418
+    deletions: 4
+    changed_files: 8
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    - .gitignore
+    - composer.json
+    - phpunit.xml
+    - test/TlsIconTest.php
+    - test/rcmail.php
+    - test/rcube_plugin.php
+    savings_bytes: 34021
+    savings_paths:
+    - path: .gitignore
+      bytes: 46
+    - path: .gitattributes
+      bytes: 191
+    - path: .editorconfig
+      bytes: 158
+    - path: phpunit.xml
+      bytes: 514
+    - path: test
+      bytes: 20628
+    - path: .github
+      bytes: 1326
+    - path: tls_icon_example.png
+      bytes: 11158
+- repo: getsentry/self-hosted
+  prs:
+  - pr: 973
+    title: 'ci: Add .gitattributes file to exclude unnecessary files from repo zips'
+    state: MERGED
+    url: https://github.com/getsentry/self-hosted/pull/973
+    created_at: '2021-05-29'
+    closed_at: '2021-05-30'
+    merged_at: '2021-05-30'
+    additions: 6
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 19913
+    savings_paths:
+    - path: .gitattributes
+      bytes: 134
+    - path: .gitignore
+      bytes: 1684
+    - path: .github
+      bytes: 17690
+    - path: .editorconfig
+      bytes: 183
+    - path: .craft.yml
+      bytes: 222
+- repo: getsentry/sentry-laravel
+  prs:
+  - pr: 1139
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/getsentry/sentry-laravel/pull/1139
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 4
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: google/recaptcha
+  prs:
+  - pr: 587
+    title: Fix .gitattributes
+    state: MERGED
+    url: https://github.com/google/recaptcha/pull/587
+    created_at: '2026-03-05'
+    closed_at: '2026-03-18'
+    merged_at: '2026-03-18'
+    additions: 2
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 717
+    savings_paths:
+    - path: app.yaml
+      bytes: 87
+    - path: phpunit.xml.dist
+      bytes: 630
+  - pr: 626
+    title: Remove  /phpstan.neon from the vendor tarball
+    state: MERGED
+    url: https://github.com/google/recaptcha/pull/626
+    created_at: '2026-04-27'
+    closed_at: '2026-04-28'
+    merged_at: '2026-04-28'
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 87
+    savings_paths:
+    - path: phpstan.neon
+      bytes: 87
+- repo: googleapis/gax-php
+  prs:
+  - pr: 281
+    title: 'chore: replace sami with doctum for doc generation'
+    state: MERGED
+    url: https://github.com/googleapis/gax-php/pull/281
+    created_at: '2020-09-18'
+    closed_at: '2020-10-16'
+    merged_at: '2020-10-16'
+    additions: 38
+    deletions: 16
+    changed_files: 7
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    - .travis.yml
+    - composer.json
+    - dev/sh/build-docs.sh
+    - dev/src/Docs/DoctumConfigBuilder.php
+    - dev/src/Docs/doctum-config.php
+    savings_bytes: 14918
+    savings_paths:
+    - path: .gitattributes
+      bytes: 192
+    - path: .gitignore
+      bytes: 232
+    - path: .github
+      bytes: 8944
+    - path: dev
+      bytes: 5509
+    - path: codecov.yml
+      bytes: 41
+- repo: GoogleCloudPlatform/grpc-gcp-php
+  prs:
+  - pr: 60
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/GoogleCloudPlatform/grpc-gcp-php/pull/60
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 3
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: HubSpot/hubspot-api-php
+  prs:
+  - pr: 618
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/HubSpot/hubspot-api-php/pull/618
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 5
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: Intervention/validation
+  prs:
+  - pr: 99
+    title: .
+    state: CLOSED
+    url: https://github.com/Intervention/validation/pull/99
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: null
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: KnpLabs/Gaufrette
+  prs:
+  - pr: 679
+    title: 'Fix #649 - Remove useless files from users and servers'
+    state: MERGED
+    url: https://github.com/KnpLabs/Gaufrette/pull/679
+    created_at: '2022-10-10'
+    closed_at: '2022-11-03'
+    merged_at: '2022-11-03'
+    additions: 26
+    deletions: 0
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - composer.json
+    savings_bytes: 791753
+    savings_paths:
+    - path: .gitattributes
+      bytes: 411
+    - path: .gitignore
+      bytes: 201
+    - path: .github
+      bytes: 4894
+    - path: .php-cs-fixer.dist.php
+      bytes: 1529
+    - path: phpstan.neon.dist
+      bytes: 129
+    - path: phpstan-baseline.neon
+      bytes: 9485
+    - path: .editorconfig
+      bytes: 244
+    - path: .travis.yml
+      bytes: 1287
+    - path: appveyor.yml
+      bytes: 2934
+    - path: psalm.baseline.xml
+      bytes: 3573
+    - path: psalm.xml
+      bytes: 483
+    - path: bin
+      bytes: 347
+    - path: doc
+      bytes: 766236
+- repo: LimeSurvey/LimeSurvey
+  prs:
+  - pr: 4156
+    title: Fix .gitattributes typo and missing files for psalm
+    state: CLOSED
+    url: https://github.com/LimeSurvey/LimeSurvey/pull/4156
+    created_at: '2025-02-03'
+    closed_at: '2025-02-06'
+    merged_at: null
+    additions: 1
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: liuch/dmarc-srg
+  prs:
+  - pr: 77
+    title: Add .gitattributes and .editorconfig
+    state: CLOSED
+    url: https://github.com/liuch/dmarc-srg/pull/77
+    created_at: '2023-06-20'
+    closed_at: '2023-06-27'
+    merged_at: null
+    additions: 55
+    deletions: 19
+    changed_files: 17
+    files_touched:
+    - .editorconfig
+    - .gitattributes
+    - admin.php
+    - css/notification.css
+    - domains.php
+    - files.php
+    - index.html
+    - init.php
+    - js/widgets.js
+    - list.php
+    - login.php
+    - logout.php
+    - logs.php
+    - report.php
+    - settings.php
+    - status.php
+    - summary.php
+    savings_bytes: null
+- repo: maennchen/ZipStream-PHP
+  prs:
+  - pr: 422
+    title: Cleanup the composer archive
+    state: CLOSED
+    url: https://github.com/maennchen/ZipStream-PHP/pull/422
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: null
+    additions: 13
+    deletions: 3
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: Mangopay/mangopay4-php-sdk
+  prs:
+  - pr: 495
+    title: 'Fix #494 - cleanup vendor bundle'
+    state: MERGED
+    url: https://github.com/Mangopay/mangopay4-php-sdk/pull/495
+    created_at: '2021-06-10'
+    closed_at: '2021-08-10'
+    merged_at: '2021-08-10'
+    additions: 12
+    deletions: 0
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    savings_bytes: 7516
+    savings_paths:
+    - path: .gitattributes
+      bytes: 219
+    - path: .gitignore
+      bytes: 230
+    - path: .github
+      bytes: 1819
+    - path: Makefile
+      bytes: 1463
+    - path: php_env
+      bytes: 3164
+    - path: phpunit.xml
+      bytes: 199
+    - path: .php_cs
+      bytes: 422
+- repo: matomo-org/component-cache
+  prs:
+  - pr: 36
+    title: Update PHPUnit, drop PHP 7.1, add PHP 8.5
+    state: MERGED
+    url: https://github.com/matomo-org/component-cache/pull/36
+    created_at: '2024-07-28'
+    closed_at: '2026-01-19'
+    merged_at: '2026-01-19'
+    additions: 471
+    deletions: 580
+    changed_files: 15
+    files_touched:
+    - .gitattributes
+    - .github/workflows/phpunit.yml
+    - .gitignore
+    - composer.json
+    - composer.lock
+    - tests/Backend/ChainedTest.php
+    - tests/Backend/DefaultTimeoutTest.php
+    - tests/Backend/FactoryTest.php
+    - tests/Backend/FileTest.php
+    - tests/Backend/KeyPrefixTest.php
+    - tests/Backend/NullCacheTest.php
+    - tests/BackendTest.php
+    - tests/EagerTest.php
+    - tests/LazyTest.php
+    - tests/TransientTest.php
+    savings_bytes: 39872
+    savings_paths:
+    - path: tests
+      bytes: 38457
+    - path: .github
+      bytes: 893
+    - path: phpunit.xml
+      bytes: 522
+- repo: matomo-org/component-decompress
+  prs:
+  - pr: 22
+    title: Move to GitHub actions
+    state: MERGED
+    url: https://github.com/matomo-org/component-decompress/pull/22
+    created_at: '2024-07-28'
+    closed_at: '2024-07-29'
+    merged_at: '2024-07-29'
+    additions: 31
+    deletions: 25
+    changed_files: 4
+    files_touched:
+    - .gitattributes
+    - .github/workflows/phpunit.yml
+    - .travis.yml
+    - README.md
+    savings_bytes: 13113
+    savings_paths:
+    - path: .github
+      bytes: 557
+    - path: tests
+      bytes: 11837
+    - path: phpunit.xml
+      bytes: 719
+- repo: matomo-org/component-network
+  prs:
+  - pr: 17
+    title: Allow tests to run on phpunit 12 and some minor fixes
+    state: MERGED
+    url: https://github.com/matomo-org/component-network/pull/17
+    created_at: '2025-10-05'
+    closed_at: '2025-10-08'
+    merged_at: '2025-10-08'
+    additions: 30
+    deletions: 8
+    changed_files: 8
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    - README.md
+    - composer.json
+    - tests/IPTest.php
+    - tests/IPUtilsTest.php
+    - tests/IPv4Test.php
+    - tests/IPv6Test.php
+    savings_bytes: 39812
+    savings_paths:
+    - path: tests
+      bytes: 38737
+    - path: .github
+      bytes: 564
+    - path: phpunit.xml
+      bytes: 511
+- repo: matomo-org/device-detector
+  prs:
+  - pr: 7727
+    title: Make tests compatible with newer phpunit versions
+    state: MERGED
+    url: https://github.com/matomo-org/device-detector/pull/7727
+    created_at: '2024-07-02'
+    closed_at: '2025-12-15'
+    merged_at: '2025-12-15'
+    additions: 152
+    deletions: 47
+    changed_files: 22
+    files_touched:
+    - .gitattributes
+    - .github/workflows/phpcs.yml
+    - .github/workflows/phpstan.yml
+    - .github/workflows/phpunit.yml
+    - .github/workflows/regular_expressions.yml
+    - .github/workflows/update-readme.yml
+    - .github/workflows/yamllint.yml
+    - .gitignore
+    - Tests/DeviceDetectorTest.php
+    - Tests/Parser/Client/BrowserTest.php
+    - Tests/Parser/Client/FeedReaderTest.php
+    - Tests/Parser/Client/LibraryTest.php
+    - Tests/Parser/Client/MediaPlayerTest.php
+    - Tests/Parser/Client/MobileAppTest.php
+    - Tests/Parser/Client/PIMTest.php
+    - Tests/Parser/Device/CameraTest.php
+    - Tests/Parser/Device/CarBrowserTest.php
+    - Tests/Parser/Device/ConsoleTest.php
+    - Tests/Parser/Device/NotebookTest.php
+    - Tests/Parser/OperatingSystemTest.php
+    - Tests/Parser/VendorFragmentTest.php
+    - composer.json
+    savings_bytes: 0
+    savings_paths: []
+- repo: mockery/mockery
+  prs:
+  - pr: 1486
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: CLOSED
+    url: https://github.com/mockery/mockery/pull/1486
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: null
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: OndraM/ci-detector
+  prs:
+  - pr: 86
+    title: Adjust .gitattributes
+    state: MERGED
+    url: https://github.com/OndraM/ci-detector/pull/86
+    created_at: '2020-11-29'
+    closed_at: '2020-11-30'
+    merged_at: '2020-11-30'
+    additions: 2
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 224
+    savings_paths:
+    - path: .circleci
+      bytes: 197
+    - path: .travis.php.ini
+      bytes: 27
+- repo: paragonie/random_compat
+  prs:
+  - pr: 171
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/paragonie/random_compat/pull/171
+    created_at: '2021-06-19'
+    closed_at: '2021-08-08'
+    merged_at: '2021-08-08'
+    additions: 1
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 2798
+    savings_paths:
+    - path: .github
+      bytes: 2798
+- repo: paragonie/sodium_compat
+  prs:
+  - pr: 147
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/paragonie/sodium_compat/pull/147
+    created_at: '2022-07-13'
+    closed_at: '2022-07-19'
+    merged_at: '2022-07-19'
+    additions: 12
+    deletions: 3
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 6706
+    savings_paths:
+    - path: .gitignore
+      bytes: 145
+    - path: .github
+      bytes: 3243
+    - path: phpunit.xml.dist
+      bytes: 631
+    - path: build-phar.sh
+      bytes: 206
+    - path: dist
+      bytes: 2069
+    - path: autoload-phpunit.php
+      bytes: 177
+    - path: autoload-pedantic.php
+      bytes: 135
+    - path: autoload-fast.php
+      bytes: 100
+- repo: parsedown/parsedown
+  prs:
+  - pr: 5
+    title: Update .gitattributes
+    state: CLOSED
+    url: https://github.com/parsedown/parsedown/pull/5
+    created_at: '2025-12-31'
+    closed_at: '2026-01-11'
+    merged_at: null
+    additions: 4
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+  - pr: 6
+    title: Update .gitattributes for 1.7.x
+    state: MERGED
+    url: https://github.com/parsedown/parsedown/pull/6
+    created_at: '2025-12-31'
+    closed_at: '2026-01-11'
+    merged_at: '2026-01-11'
+    additions: 3
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 1139
+    savings_paths:
+    - path: .gitignore
+      bytes: 95
+    - path: .mailmap
+      bytes: 129
+    - path: .github
+      bytes: 915
+- repo: phar-io/manifest
+  prs:
+  - pr: 39
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/phar-io/manifest/pull/39
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: PHP-DI/Invoker
+  prs:
+  - pr: 45
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/PHP-DI/Invoker/pull/45
+    created_at: '2023-09-06'
+    closed_at: '2023-09-08'
+    merged_at: '2023-09-08'
+    additions: 3
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 7888
+    savings_paths:
+    - path: doc
+      bytes: 3474
+    - path: .github
+      bytes: 3670
+    - path: .phpcs.xml.dist
+      bytes: 744
+  - pr: 48
+    title: Remove CONTRIBUTING.md
+    state: MERGED
+    url: https://github.com/PHP-DI/Invoker/pull/48
+    created_at: '2023-09-08'
+    closed_at: '2023-09-12'
+    merged_at: '2023-09-12'
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 834
+    savings_paths:
+    - path: CONTRIBUTING.md
+      bytes: 834
+- repo: PHP-DI/PHP-DI
+  prs:
+  - pr: 863
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/PHP-DI/PHP-DI/pull/863
+    created_at: '2023-09-13'
+    closed_at: '2023-09-18'
+    merged_at: '2023-09-18'
+    additions: 2
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 2612
+    savings_paths:
+    - path: .php-cs-fixer.php
+      bytes: 2093
+    - path: psalm.xml
+      bytes: 519
+- repo: PHP-DI/PhpDocReader
+  prs:
+  - pr: 22
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/PHP-DI/PhpDocReader/pull/22
+    created_at: '2021-06-29'
+    closed_at: '2021-06-29'
+    merged_at: '2021-06-29'
+    additions: 5
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 3740
+    savings_paths:
+    - path: .gitattributes
+      bytes: 253
+    - path: .gitignore
+      bytes: 90
+    - path: .github
+      bytes: 2780
+    - path: .phpcs.xml.dist
+      bytes: 617
+- repo: PHP-FFMpeg/PHP-FFMpeg
+  prs:
+  - pr: 761
+    title: Use Doctum instead of Sami
+    state: MERGED
+    url: https://github.com/PHP-FFMpeg/PHP-FFMpeg/pull/761
+    created_at: '2020-09-15'
+    closed_at: '2020-10-12'
+    merged_at: '2020-10-12'
+    additions: 48
+    deletions: 23
+    changed_files: 6
+    files_touched:
+    - .gitattributes
+    - .gitignore
+    - .sami.php
+    - composer.json
+    - docs/doctum.php
+    - docs/generate-docs.sh
+    savings_bytes: 3373
+    savings_paths:
+    - path: .gitattributes
+      bytes: 172
+    - path: .gitignore
+      bytes: 218
+    - path: .github
+      bytes: 2983
+- repo: php-webdriver/php-webdriver
+  prs:
+  - pr: 776
+    title: Clean up some files from dist version
+    state: MERGED
+    url: https://github.com/php-webdriver/php-webdriver/pull/776
+    created_at: '2020-03-19'
+    closed_at: '2020-04-24'
+    merged_at: '2020-04-24'
+    additions: 4
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 26394
+    savings_paths:
+    - path: .github
+      bytes: 24732
+    - path: phpstan.neon
+      bytes: 1587
+    - path: .coveralls.yml
+      bytes: 75
+  - pr: 1004
+    title: Minor project fixes and improvements
+    state: MERGED
+    url: https://github.com/php-webdriver/php-webdriver/pull/1004
+    created_at: '2022-09-04'
+    closed_at: '2022-09-06'
+    merged_at: '2022-09-06'
+    additions: 18
+    deletions: 2
+    changed_files: 7
+    files_touched:
+    - .gitattributes
+    - .github/workflows/docs-lint.yml
+    - .github/workflows/docs-publish.yml
+    - .github/workflows/no-response.yaml
+    - .github/workflows/sauce-labs.yaml
+    - .github/workflows/tests.yaml
+    - lib/Remote/RemoteWebDriver.php
+    savings_bytes: 6249
+    savings_paths:
+    - path: .php-cs-fixer.dist.php
+      bytes: 6249
+    - path: logs
+      bytes: 0
+- repo: phpDocumentor/ReflectionDocBlock
+  prs:
+  - pr: 344
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/phpDocumentor/ReflectionDocBlock/pull/344
+    created_at: '2022-11-12'
+    closed_at: '2022-11-14'
+    merged_at: '2022-11-14'
+    additions: 2
+    deletions: 4
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 1654
+    savings_paths:
+    - path: .yamllint.yaml
+      bytes: 1294
+    - path: composer-require-checker.json
+      bytes: 360
+  - pr: 440
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/phpDocumentor/ReflectionDocBlock/pull/440
+    created_at: '2026-01-22'
+    closed_at: '2026-01-23'
+    merged_at: '2026-01-23'
+    additions: 3
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 18890
+    savings_paths:
+    - path: phpstan-baseline.neon
+      bytes: 726
+    - path: phpdoc.dist.xml
+      bytes: 1541
+    - path: docs
+      bytes: 16623
+- repo: phpDocumentor/TypeResolver
+  prs:
+  - pr: 177
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/phpDocumentor/TypeResolver/pull/177
+    created_at: '2022-11-25'
+    closed_at: '2022-12-16'
+    merged_at: '2022-12-16'
+    additions: 3
+    deletions: 4
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 1700
+    savings_paths:
+    - path: .yamllint.yaml
+      bytes: 1294
+    - path: composer-require-checker.json
+      bytes: 406
+  - pr: 286
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/phpDocumentor/TypeResolver/pull/286
+    created_at: '2026-01-22'
+    closed_at: '2026-01-22'
+    merged_at: '2026-01-22'
+    additions: 3
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 7050
+    savings_paths:
+    - path: docs
+      bytes: 4917
+    - path: phpdoc.dist.xml
+      bytes: 1535
+    - path: .phpdoc
+      bytes: 598
+- repo: phpmyadmin/docker
+  prs:
+  - pr: 261
+    title: Some improvements and implementations
+    state: MERGED
+    url: https://github.com/phpmyadmin/docker/pull/261
+    created_at: '2019-12-23'
+    closed_at: '2019-12-24'
+    merged_at: '2019-12-24'
+    additions: 69
+    deletions: 24
+    changed_files: 11
+    files_touched:
+    - .gitattributes
+    - Dockerfile-alpine.template
+    - Dockerfile-debian.template
+    - README.md
+    - apache/Dockerfile
+    - apache/docker-entrypoint.sh
+    - docker-entrypoint.sh
+    - fpm-alpine/Dockerfile
+    - fpm-alpine/docker-entrypoint.sh
+    - fpm/Dockerfile
+    - fpm/docker-entrypoint.sh
+    savings_bytes: 0
+    savings_paths: []
+- repo: phpmyadmin/phpmyadmin
+  prs:
+  - pr: 16100
+    title: Add Psalm
+    state: MERGED
+    url: https://github.com/phpmyadmin/phpmyadmin/pull/16100
+    created_at: '2020-04-28'
+    closed_at: '2020-04-28'
+    merged_at: '2020-04-28'
+    additions: 2964
+    deletions: 75
+    changed_files: 25
+    files_touched:
+    - .gitattributes
+    - composer.json
+    - libraries/classes/Advisor.php
+    - libraries/classes/Controllers/Table/StructureController.php
+    - libraries/classes/Core.php
+    - libraries/classes/Database/Designer/DesignerTable.php
+    - libraries/classes/Database/Routines.php
+    - libraries/classes/DatabaseInterface.php
+    - libraries/classes/Gis/GisPolygon.php
+    - libraries/classes/Language.php
+    - libraries/classes/LanguageManager.php
+    - libraries/classes/Plugins.php
+    - libraries/classes/Plugins/Auth/AuthenticationSignon.php
+    - libraries/classes/Plugins/AuthenticationPlugin.php
+    - libraries/classes/Sanitize.php
+    - libraries/classes/Server/Privileges.php
+    - libraries/classes/Table/ColumnsDefinition.php
+    - libraries/classes/Template.php
+    - libraries/classes/Types.php
+    - libraries/classes/Util.php
+    - phpstan-baseline.neon
+    - psalm-baseline.xml
+    - psalm.xml
+    - scripts/create-release.sh
+    - test/classes/Server/PrivilegesTest.php
+    savings_bytes: 443874
+    savings_paths:
+    - path: psalm.xml
+      bytes: 1484
+    - path: psalm-baseline.xml
+      bytes: 442390
+  - pr: 16273
+    title: 'Fix #14644 - Use Doctum instead of Sami'
+    state: MERGED
+    url: https://github.com/phpmyadmin/phpmyadmin/pull/16273
+    created_at: '2020-07-19'
+    closed_at: '2020-08-15'
+    merged_at: '2020-08-15'
+    additions: 28
+    deletions: 25
+    changed_files: 6
+    files_touched:
+    - .gitattributes
+    - .travis.yml
+    - phpcs.xml.dist
+    - phpstan.neon.dist
+    - test/doctum-config.php
+    - test/sami-config.php
+    savings_bytes: 0
+    savings_paths: []
+  - pr: 16628
+    title: Finish dropping TravisCI and setup selenium CI
+    state: MERGED
+    url: https://github.com/phpmyadmin/phpmyadmin/pull/16628
+    created_at: '2021-02-08'
+    closed_at: '2021-02-09'
+    merged_at: '2021-02-09'
+    additions: 227
+    deletions: 147
+    changed_files: 13
+    files_touched:
+    - .gitattributes
+    - .github/workflows/test-selenium.yml
+    - .github/workflows/tests.yml
+    - .travis.yml
+    - README.rst
+    - phpcs.xml.dist
+    - test/README.rst
+    - test/config.e2e.inc.php
+    - test/nginx.conf
+    - test/php-fpm.conf
+    - test/selenium/TestBase.php
+    - test/start-local-server
+    - test/stop-local-server
+    savings_bytes: 0
+    savings_paths: []
+- repo: phpmyadmin/sql-parser
+  prs:
+  - pr: 352
+    title: Add phpbench
+    state: MERGED
+    url: https://github.com/phpmyadmin/sql-parser/pull/352
+    created_at: '2021-09-06'
+    closed_at: '2023-01-12'
+    merged_at: '2023-01-12'
+    additions: 130
+    deletions: 7
+    changed_files: 8
+    files_touched:
+    - .gitattributes
+    - .github/workflows/lint-and-analyse-php.yml
+    - .github/workflows/tests.yml
+    - .scrutinizer.yml
+    - CHANGELOG.md
+    - composer.json
+    - phpbench.json
+    - tests/benchmarks/UtfStringBench.php
+    savings_bytes: 1728
+    savings_paths:
+    - path: tests/benchmarks
+      bytes: 1612
+    - path: phpbench.json
+      bytes: 116
+- repo: phpstan/phpdoc-parser
+  prs:
+  - pr: 73
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/phpstan/phpdoc-parser/pull/73
+    created_at: '2021-04-10'
+    closed_at: '2021-04-11'
+    merged_at: '2021-04-11'
+    additions: 8
+    deletions: 1
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 37963
+    savings_paths:
+    - path: doc/grammars
+      bytes: 7742
+    - path: .editorconfig
+      bytes: 355
+    - path: .github
+      bytes: 25791
+    - path: phpstan.neon
+      bytes: 311
+    - path: build-abnfgen.sh
+      bytes: 542
+    - path: CODE_OF_CONDUCT.md
+      bytes: 3222
+- repo: rogervila/array-diff-multidimensional
+  prs:
+  - pr: 19
+    title: Add a .gitattributes
+    state: MERGED
+    url: https://github.com/rogervila/array-diff-multidimensional/pull/19
+    created_at: '2021-07-21'
+    closed_at: '2021-07-23'
+    merged_at: '2021-07-23'
+    additions: 9
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 81463
+    savings_paths:
+    - path: .gitattributes
+      bytes: 264
+    - path: .gitignore
+      bytes: 120
+    - path: .github
+      bytes: 8035
+    - path: .circleci
+      bytes: 1632
+    - path: tests
+      bytes: 69896
+    - path: .php_cs
+      bytes: 402
+    - path: .styleci.yml
+      bytes: 60
+    - path: .codeclimate.yml
+      bytes: 302
+    - path: phpunit.xml
+      bytes: 752
+- repo: roundcube/roundcubemail-docker
+  prs:
+  - pr: 251
+    title: Improve the docker layers
+    state: MERGED
+    url: https://github.com/roundcube/roundcubemail-docker/pull/251
+    created_at: '2024-05-29'
+    closed_at: '2024-11-07'
+    merged_at: '2024-11-07'
+    additions: 175
+    deletions: 178
+    changed_files: 9
+    files_touched:
+    - .editorconfig
+    - .gitattributes
+    - apache/Dockerfile
+    - fpm-alpine/Dockerfile
+    - fpm/Dockerfile
+    - templates/Dockerfile-alpine.templ
+    - templates/Dockerfile-debian.templ
+    - templates/travis.yml
+    - update.sh
+    savings_bytes: 0
+    savings_paths: []
+- repo: rust-unofficial/awesome-rust
+  prs:
+  - pr: 1131
+    title: Add some configurations and fix broken links
+    state: MERGED
+    url: https://github.com/rust-unofficial/awesome-rust/pull/1131
+    created_at: '2021-08-05'
+    closed_at: '2021-08-08'
+    merged_at: '2021-08-08'
+    additions: 57
+    deletions: 16
+    changed_files: 5
+    files_touched:
+    - .editorconfig
+    - .gitattributes
+    - .github/workflows/lint.yml
+    - .markdownlint.json
+    - README.md
+    savings_bytes: 7263
+    savings_paths:
+    - path: .github
+      bytes: 4759
+    - path: .gitignore
+      bytes: 53
+    - path: CONTRIBUTING.md
+      bytes: 1989
+    - path: .markdownlint.json
+      bytes: 154
+    - path: .editorconfig
+      bytes: 308
+- repo: Samyoul/U2F-php-server
+  prs:
+  - pr: 9
+    title: Some maintenance
+    state: CLOSED
+    url: https://github.com/Samyoul/U2F-php-server/pull/9
+    created_at: '2020-10-27'
+    closed_at: '2021-12-12'
+    merged_at: null
+    additions: 765
+    deletions: 108
+    changed_files: 13
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    - .gitignore
+    - LICENCE
+    - README.md
+    - composer.json
+    - phpunit.xml
+    - src/Registration.php
+    - src/RegistrationRequest.php
+    - src/SignRequest.php
+    - src/U2FException.php
+    - src/U2FServer.php
+    - test/U2FServerTest.php
+    savings_bytes: null
+- repo: schmittjoh/serializer
+  prs:
+  - pr: 1626
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/schmittjoh/serializer/pull/1626
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 3
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: shuchkin/simplexlsx
+  prs:
+  - pr: 167
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: MERGED
+    url: https://github.com/shuchkin/simplexlsx/pull/167
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: '2026-05-20'
+    additions: 3
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 33054
+    savings_paths:
+    - path: examples
+      bytes: 32973
+    - path: .gitattributes
+      bytes: 81
+- repo: silverstripe/silverstripe-framework
+  prs:
+  - pr: 9805
+    title: Update .gitattributes and some http:// links
+    state: MERGED
+    url: https://github.com/silverstripe/silverstripe-framework/pull/9805
+    created_at: '2020-12-21'
+    closed_at: '2020-12-22'
+    merged_at: '2020-12-22'
+    additions: 7
+    deletions: 3
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - README.md
+    savings_bytes: 14055
+    savings_paths:
+    - path: .github
+      bytes: 11951
+    - path: phpcs.xml.dist
+      bytes: 1464
+    - path: .editorconfig
+      bytes: 640
+- repo: simshaun/recurr
+  prs:
+  - pr: 201
+    title: CI updates and gitattributes fix
+    state: MERGED
+    url: https://github.com/simshaun/recurr/pull/201
+    created_at: '2022-09-04'
+    closed_at: '2022-09-09'
+    merged_at: '2022-09-09'
+    additions: 7
+    deletions: 2
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    savings_bytes: 208
+    savings_paths:
+    - path: .gitattributes
+      bytes: 132
+    - path: .gitignore
+      bytes: 76
+- repo: slevomat/coding-standard
+  prs:
+  - pr: 1854
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: MERGED
+    url: https://github.com/slevomat/coding-standard/pull/1854
+    created_at: '2026-05-20'
+    closed_at: '2026-05-20'
+    merged_at: '2026-05-20'
+    additions: 4
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 78123
+    savings_paths:
+    - path: .editorconfig
+      bytes: 159
+    - path: .github
+      bytes: 7116
+    - path: codecov.yml
+      bytes: 145
+    - path: doc
+      bytes: 70703
+- repo: slimphp/Slim
+  prs:
+  - pr: 3411
+    title: Allow PHPUnit 10, 11 and 12
+    state: MERGED
+    url: https://github.com/slimphp/Slim/pull/3411
+    created_at: '2025-09-20'
+    closed_at: '2025-09-23'
+    merged_at: '2025-09-23'
+    additions: 73
+    deletions: 59
+    changed_files: 15
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    - composer.json
+    - phpunit.xml.dist
+    - tests/AppTest.php
+    - tests/Factory/AppFactoryTest.php
+    - tests/Factory/Psr17/Psr17FactoryProviderTest.php
+    - tests/Factory/ServerRequestCreatorFactoryTest.php
+    - tests/Handlers/ErrorHandlerTest.php
+    - tests/Middleware/BodyParsingMiddlewareTest.php
+    - tests/MiddlewareDispatcherTest.php
+    - tests/Routing/FastRouteDispatcherTest.php
+    - tests/Routing/RouteContextTest.php
+    - tests/Routing/RouteParserTest.php
+    - tests/Routing/RouteResolverTest.php
+    savings_bytes: 1452
+    savings_paths:
+    - path: MAINTAINERS.md
+      bytes: 946
+    - path: psalm.xml
+      bytes: 506
+- repo: slimphp/Slim-Psr7
+  prs:
+  - pr: 274
+    title: Some minor improvements
+    state: MERGED
+    url: https://github.com/slimphp/Slim-Psr7/pull/274
+    created_at: '2022-12-03'
+    closed_at: '2023-02-13'
+    merged_at: '2023-02-13'
+    additions: 9
+    deletions: 2
+    changed_files: 3
+    files_touched:
+    - .gitattributes
+    - .github/workflows/tests.yml
+    - composer.json
+    savings_bytes: 957
+    savings_paths:
+    - path: MAINTAINERS.md
+      bytes: 957
+- repo: smalot/pdfparser
+  prs:
+  - pr: 792
+    title: Update .gitattributes after the recent updates in the recent years
+    state: MERGED
+    url: https://github.com/smalot/pdfparser/pull/792
+    created_at: '2026-03-25'
+    closed_at: '2026-03-27'
+    merged_at: '2026-03-27'
+    additions: 7
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 26299
+    savings_paths:
+    - path: .php-cs-fixer.php
+      bytes: 805
+    - path: .github
+      bytes: 7461
+    - path: CONTRIBUTING.md
+      bytes: 2365
+    - path: phpunit-windows.xml
+      bytes: 989
+    - path: doc
+      bytes: 11884
+    - path: Makefile
+      bytes: 238
+    - path: alt_autoload.php-dist
+      bytes: 2557
+- repo: Spomky-Labs/cbor-php
+  prs:
+  - pr: 110
+    title: Update .gitattributes
+    state: CLOSED
+    url: https://github.com/Spomky-Labs/cbor-php/pull/110
+    created_at: '2026-03-05'
+    closed_at: '2026-04-01'
+    merged_at: null
+    additions: 3
+    deletions: 2
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: StartBootstrap/startbootstrap-sb-admin-2
+  prs:
+  - pr: 395
+    title: Fix typos and mistakes and update copyright years
+    state: CLOSED
+    url: https://github.com/StartBootstrap/startbootstrap-sb-admin-2/pull/395
+    created_at: '2021-05-24'
+    closed_at: '2022-07-14'
+    merged_at: null
+    additions: 75
+    deletions: 83
+    changed_files: 15
+    files_touched:
+    - .gitattributes
+    - 404.html
+    - PRO_UPGRADE.txt
+    - blank.html
+    - buttons.html
+    - cards.html
+    - charts.html
+    - forgot-password.html
+    - index.html
+    - login.html
+    - tables.html
+    - utilities-animation.html
+    - utilities-border.html
+    - utilities-color.html
+    - utilities-other.html
+    savings_bytes: null
+- repo: swaggest/php-json-schema
+  prs:
+  - pr: 170
+    title: Update .gitattributes to exclude dev files from composer dist
+    state: OPEN
+    url: https://github.com/swaggest/php-json-schema/pull/170
+    created_at: '2026-05-20'
+    closed_at: null
+    merged_at: null
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: tecnickcom/TCPDF
+  prs:
+  - pr: 346
+    title: Drop a PHP 4 polyfill and add a .gitattributes file
+    state: MERGED
+    url: https://github.com/tecnickcom/TCPDF/pull/346
+    created_at: '2021-03-27'
+    closed_at: '2021-03-28'
+    merged_at: '2021-03-28'
+    additions: 3
+    deletions: 26
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - include/barcodes/qrcode.php
+    savings_bytes: 5722
+    savings_paths:
+    - path: .github
+      bytes: 5483
+    - path: .gitignore
+      bytes: 59
+    - path: .gitattributes
+      bytes: 180
+  - pr: 349
+    title: Add a CI for docs and running examples + (generating coverage !!)
+    state: MERGED
+    url: https://github.com/tecnickcom/TCPDF/pull/349
+    created_at: '2021-03-28'
+    closed_at: '2021-04-02'
+    merged_at: '2021-04-02'
+    additions: 359
+    deletions: 2
+    changed_files: 9
+    files_touched:
+    - .gitattributes
+    - .github/workflows/lint-docs.yml
+    - .github/workflows/tests.yml
+    - examples/barcodes/tcpdf_barcodes_1d_include.php
+    - examples/barcodes/tcpdf_barcodes_2d_include.php
+    - scripts/doctum.php
+    - tests/.gitignore
+    - tests/coverage.php
+    - tests/launch.sh
+    savings_bytes: 70002
+    savings_paths:
+    - path: tests
+      bytes: 68986
+    - path: scripts
+      bytes: 1016
+- repo: twigphp/Twig
+  prs:
+  - pr: 4712
+    title: Update .gitattributes to exclude phpstan configs
+    state: MERGED
+    url: https://github.com/twigphp/Twig/pull/4712
+    created_at: '2025-11-19'
+    closed_at: '2025-11-19'
+    merged_at: '2025-11-19'
+    additions: 2
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 1085
+    savings_paths:
+    - path: phpstan.neon.dist
+      bytes: 126
+    - path: phpstan-baseline.neon
+      bytes: 959
+  - pr: 4745
+    title: Update .gitattributes to remove splitsh.json
+    state: MERGED
+    url: https://github.com/twigphp/Twig/pull/4745
+    created_at: '2026-01-22'
+    closed_at: '2026-02-07'
+    merged_at: '2026-02-07'
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 492
+    savings_paths:
+    - path: splitsh.json
+      bytes: 492
+  - pr: 4758
+    title: Remove splitsh.json from vendor tarball
+    state: CLOSED
+    url: https://github.com/twigphp/Twig/pull/4758
+    created_at: '2026-02-06'
+    closed_at: '2026-02-06'
+    merged_at: null
+    additions: 1
+    deletions: 0
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: null
+- repo: wdes/mounch
+  prs:
+  - pr: 24
+    title: 'feat: zero-downtime deploy, /api/version, footer version, 401 auto-redirect'
+    state: MERGED
+    url: https://github.com/wdes/mounch/pull/24
+    created_at: '2026-04-14'
+    closed_at: '2026-04-15'
+    merged_at: '2026-04-15'
+    additions: 6369
+    deletions: 354
+    changed_files: 81
+    files_touched:
+    - .gitattributes
+    - .github/scripts/e2e-configure-fpm.sh
+    - .github/scripts/e2e-install-server.sh
+    - .github/scripts/e2e-start-caddy.sh
+    - .github/scripts/e2e-stop-server.sh
+    - .github/scripts/e2e-wait-laravel.sh
+    - .github/scripts/format-phpunit-coverage.cjs
+    - .github/scripts/upsert-ci-comment.cjs
+    - .github/workflows/api-deploy.yml
+    - .github/workflows/frontend-ci.yml
+    - .gitignore
+    - AGENTS.md
+    - composer.json
+    - database/seeders/GaladrielFormSeeder.php
+    - phpstan-baseline.neon
+    - phpstan.neon
+    - playwright.config.js
+    - resources/js/app.js
+    - resources/js/components/AppComponent.vue
+    - resources/js/pages/FormBuilderEditorPage.vue
+    - resources/js/pages/PublicFormPage.vue
+    - resources/js/pages/formBuilderEditor.helpers.js
+    - resources/js/router/guard.js
+    - resources/js/router/index.js
+    - resources/js/stores/auth.js
+    - routes/api.php
+    - scripts/build-release.sh
+    - scripts/deploy-server.sh
+    - tests/Feature/Contact/ContactTest.php
+    - tests/Feature/FormBuilder/FormTemplateTest.php
+    savings_bytes: 7652554
+    savings_paths:
+    - path: .claude
+      bytes: 64164
+    - path: .editorconfig
+      bytes: 252
+    - path: .env.example
+      bytes: 1540
+    - path: .gitattributes
+      bytes: 2089
+    - path: .gitignore
+      bytes: 1284
+    - path: AGENTS.md
+      bytes: 54145
+    - path: CLAUDE.md
+      bytes: 2678
+    - path: README.md
+      bytes: 1200
+    - path: bun.lock
+      bytes: 122211
+    - path: coding-standard
+      bytes: 197008
+    - path: database/factories
+      bytes: 1072
+    - path: database/seeders
+      bytes: 21301
+    - path: deploy
+      bytes: 17699
+    - path: docs
+      bytes: 3239655
+    - path: package.json
+      bytes: 2058
+    - path: phpcs.xml
+      bytes: 4602
+    - path: phpstan-baseline.neon
+      bytes: 230421
+    - path: phpstan.neon
+      bytes: 1442
+    - path: phpunit.xml
+      bytes: 1833
+    - path: playwright.config.js
+      bytes: 3648
+    - path: resources/js
+      bytes: 1737585
+    - path: resources/css
+      bytes: 7022
+    - path: scripts
+      bytes: 83589
+    - path: tests
+      bytes: 1850574
+    - path: vite.config.js
+      bytes: 2687
+    - path: vitest.config.js
+      bytes: 795
+  - pr: 43
+    title: 'feat(connectors): engine + HTTP API for webhook/imap/smtp envs'
+    state: MERGED
+    url: https://github.com/wdes/mounch/pull/43
+    created_at: '2026-04-27'
+    closed_at: '2026-04-29'
+    merged_at: '2026-04-29'
+    additions: 20637
+    deletions: 190
+    changed_files: 189
+    files_touched:
+    - .claude/scripts/phpcs
+    - .claude/scripts/phpstan
+    - .claude/scripts/phpunit
+    - .gitattributes
+    - AGENTS.md
+    - CLAUDE.md
+    - app/Console/Commands/ExportUserData.php
+    - app/Console/Commands/ImportUserData.php
+    - app/Console/Commands/SetUserPassword.php
+    - app/Enums/ConnectorAssertionKind.php
+    - app/Enums/ConnectorKey.php
+    - app/Enums/DurationDisplay.php
+    - app/Enums/HttpMethod.php
+    - app/Enums/PkceMethod.php
+    - app/Http/Controllers/AppointmentController.php
+    - app/Http/Controllers/ConnectorActionInvocationController.php
+    - app/Http/Controllers/ConnectorApiActionController.php
+    - app/Http/Controllers/ConnectorEnvironmentController.php
+    - app/Http/Controllers/ConnectorMcpExposureController.php
+    - app/Http/Controllers/ConnectorTestController.php
+    - app/Http/Controllers/ConnectorTestRunController.php
+    - app/Http/Controllers/ConnectorTypeController.php
+    - app/Http/Controllers/FormTemplateController.php
+    - app/Http/Controllers/McpController.php
+    - app/Http/Controllers/UserDataController.php
+    - app/Http/Controllers/UserUsageController.php
+    - app/Http/Requests/Appointment/CreateAppointmentRequest.php
+    - app/Http/Requests/AppointmentRequest/ListAppointmentRequestsRequest.php
+    - app/Http/Requests/BaseRequest.php
+    - app/Http/Requests/Company/CreateCompanyRequest.php
+    savings_bytes: 0
+    savings_paths: []
+  - pr: 57
+    title: 'feat(spa+api): import a client from a myAE.fr invoice PDF'
+    state: MERGED
+    url: https://github.com/wdes/mounch/pull/57
+    created_at: '2026-04-30'
+    closed_at: '2026-05-01'
+    merged_at: '2026-05-01'
+    additions: 13716
+    deletions: 403
+    changed_files: 147
+    files_touched:
+    - .gitattributes
+    - .github/workflows/frontend-ci.yml
+    - app/Attributes/CompanyOwnership.php
+    - app/Attributes/NotCompanyScoped.php
+    - app/Console/Commands/ConvertPdfToTsv.php
+    - app/Data/CompanyData.php
+    - app/Enums/AlreadyImportedKind.php
+    - app/Enums/InvoiceImportClientKind.php
+    - app/Http/Controllers/CompanyController.php
+    - app/Http/Controllers/ContactController.php
+    - app/Http/Controllers/InvoiceImportController.php
+    - app/Http/Controllers/TourController.php
+    - app/Http/Controllers/UserUsageController.php
+    - app/Http/Requests/AnimalCustodyPeriod/CreateAnimalCustodyPeriodRequest.php
+    - app/Http/Requests/Appointment/CreateAppointmentRequest.php
+    - app/Http/Requests/BaseRequest.php
+    - app/Http/Requests/Company/CreateCompanyRequest.php
+    - app/Http/Requests/Company/ListCompaniesRequest.php
+    - app/Http/Requests/FormTemplate/CreateFormTemplateRequest.php
+    - app/Http/Requests/InvoiceImport/ParseInvoiceImportRequest.php
+    - app/Http/Requests/Note/CreateNoteRequest.php
+    - app/Http/Requests/Note/ListNotesRequest.php
+    - app/Http/Requests/Tour/CreateTourRequest.php
+    - app/Http/Requests/Tour/DeleteTourRequest.php
+    - app/Http/Requests/Tour/GetTourRequest.php
+    - app/Http/Requests/Tour/ListToursRequest.php
+    - app/Http/Requests/Tour/UpdateTourRequest.php
+    - app/Http/Requests/UserUsage/RecordUserUsageRequest.php
+    - app/Http/Resources/AlreadyImportedResource.php
+    - app/Http/Resources/AppointmentResource.php
+    savings_bytes: 0
+    savings_paths: []
+- repo: webmozarts/assert
+  prs:
+  - pr: 251
+    title: Update .gitattributes
+    state: MERGED
+    url: https://github.com/webmozarts/assert/pull/251
+    created_at: '2021-06-19'
+    closed_at: '2021-06-19'
+    merged_at: '2021-06-19'
+    additions: 4
+    deletions: 3
+    changed_files: 1
+    files_touched:
+    - .gitattributes
+    savings_bytes: 3020
+    savings_paths:
+    - path: .github
+      bytes: 2366
+    - path: .editorconfig
+      bytes: 165
+    - path: psalm.xml
+      bytes: 489
+- repo: zumba/json-serializer
+  prs:
+  - pr: 48
+    title: Project improvements
+    state: MERGED
+    url: https://github.com/zumba/json-serializer/pull/48
+    created_at: '2022-12-07'
+    closed_at: '2022-12-07'
+    merged_at: '2022-12-07'
+    additions: 18
+    deletions: 10
+    changed_files: 4
+    files_touched:
+    - .gitattributes
+    - .github/workflows/php.yml
+    - README.md
+    - composer.json
+    savings_bytes: 1449
+    savings_paths:
+    - path: .gitattributes
+      bytes: 127
+    - path: .gitignore
+      bytes: 49
+    - path: .github
+      bytes: 1273
+  - pr: 56
+    title: Remove tests from the vendor bundle
+    state: MERGED
+    url: https://github.com/zumba/json-serializer/pull/56
+    created_at: '2023-09-10'
+    closed_at: '2023-09-25'
+    merged_at: '2023-09-25'
+    additions: 3
+    deletions: 8
+    changed_files: 2
+    files_touched:
+    - .gitattributes
+    - composer.json
+    savings_bytes: 45407
+    savings_paths:
+    - path: tests
+      bytes: 44870
+    - path: phpunit.xml
+      bytes: 537

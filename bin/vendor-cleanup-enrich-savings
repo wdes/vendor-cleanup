@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+"""
+Enrich the cleanup PR registry YAML with savings_bytes per PR.
+
+For each PR whose .gitattributes diff added `<path> export-ignore` lines,
+look up the cumulative size of <path> in the repo's base branch HEAD via
+the GitHub Git Trees API, and write it back into the YAML under
+`savings_bytes` (and `savings_paths` listing what was counted).
+
+Usage:
+    bin/vendor-cleanup-enrich-savings <yaml-file> [--limit N] [--repo OWNER/REPO]
+"""
+from __future__ import annotations
+import argparse
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+import yaml
+
+
+def run_gh_json(args: list[str]) -> dict | list:
+    """Run gh and parse JSON output."""
+    r = subprocess.run(["gh", "api", *args], capture_output=True, text=True, timeout=60)
+    if r.returncode != 0:
+        return {"_error": r.stderr.strip()}
+    try:
+        return json.loads(r.stdout)
+    except json.JSONDecodeError as e:
+        return {"_error": f"json: {e}"}
+
+
+def diff_added_export_ignore(repo: str, pr: int) -> list[str]:
+    """Return list of paths added with export-ignore in this PR's diff."""
+    r = subprocess.run(
+        ["gh", "pr", "diff", str(pr), "--repo", repo],
+        capture_output=True, text=True, timeout=30,
+    )
+    if r.returncode != 0:
+        return []
+    paths = []
+    rx = re.compile(r"^\+\s*/?([^\s]+?)/?\s+export-ignore\s*$")
+    for line in r.stdout.splitlines():
+        if line.startswith("+++") or line.startswith("---"):
+            continue
+        m = rx.match(line)
+        if m:
+            paths.append(m.group(1))
+    return list(dict.fromkeys(paths))  # dedupe, preserve order
+
+
+def get_tree_size(repo: str, branch: str, path: str) -> int | None:
+    """Sum bytes for `path` (file or directory) at the tip of `branch`."""
+    sha = run_gh_json([f"repos/{repo}/branches/{branch}"])
+    if "_error" in sha:
+        return None
+    base = sha.get("commit", {}).get("sha")
+    if not base:
+        return None
+    tree = run_gh_json([f"repos/{repo}/git/trees/{base}?recursive=1"])
+    if "_error" in tree or "tree" not in tree:
+        return None
+    norm = path.strip("/")
+    total = 0
+    matched = 0
+    for entry in tree["tree"]:
+        ep = entry["path"]
+        if entry["type"] == "blob":
+            if ep == norm or ep.startswith(norm + "/"):
+                total += entry.get("size", 0)
+                matched += 1
+    return total if matched else None
+
+
+def default_branch(repo: str) -> str:
+    info = run_gh_json([f"repos/{repo}"])
+    return info.get("default_branch", "main") if isinstance(info, dict) else "main"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("yaml_file")
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--repo", help="enrich only this repo (OWNER/REPO)")
+    ap.add_argument("--force", action="store_true", help="recompute even if savings_bytes already set")
+    args = ap.parse_args()
+
+    data = yaml.safe_load(Path(args.yaml_file).read_text())
+    done = 0
+    for repo_entry in data.get("repos", []):
+        repo = repo_entry["repo"]
+        if args.repo and repo != args.repo:
+            continue
+        for pr in repo_entry["prs"]:
+            if pr.get("savings_bytes") is not None and not args.force:
+                continue
+            if pr["state"] != "MERGED":
+                continue
+            print(f"  [{repo}#{pr['pr']}] computing…", file=sys.stderr)
+            paths = diff_added_export_ignore(repo, pr["pr"])
+            if not paths:
+                pr["savings_bytes"] = 0
+                pr["savings_paths"] = []
+                continue
+            branch = default_branch(repo)
+            total = 0
+            details = []
+            for p in paths:
+                sz = get_tree_size(repo, branch, p)
+                if sz is not None:
+                    total += sz
+                    details.append({"path": p, "bytes": sz})
+            pr["savings_bytes"] = total
+            pr["savings_paths"] = details
+            done += 1
+            if args.limit and done >= args.limit:
+                Path(args.yaml_file).write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=120))
+                print(f"hit --limit={args.limit}", file=sys.stderr)
+                return 0
+    Path(args.yaml_file).write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=120))
+    print(f"enriched {done} PRs", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

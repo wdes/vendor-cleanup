@@ -1,0 +1,110 @@
+# Sample config from the May 2026 campaign.
+# 11 PRs opened; 3 merged, 3 closed, 5 still open at the time of writing.
+
+defaults:
+  fork_dir: /path/to/your/forks
+  user_login: your-gh-handle
+  branch: your-gh-handle/gitattributes-export-ignore
+  pr_title: Update .gitattributes to exclude dev files from composer dist
+  sleep_min: 10
+  sleep_max: 20
+
+targets:
+  - repo: GoogleCloudPlatform/grpc-gcp-php
+    branch: master
+    create: false
+    last_gitattributes_ref: "b0cf139 (2026-03-13, #59)"
+    entries:
+      - { line: "/doc/ export-ignore", ref: "2d903e2 2018-07-09 (initial)" }
+      - { line: "/.github/ export-ignore", ref: "1049c0c 2026-03-12 (#58)" }
+      - { line: "/.php_cs.dist export-ignore", ref: "2d903e2 2018-07-09 (initial)" }
+
+  - repo: phar-io/manifest
+    branch: master
+    create: false
+    last_gitattributes_ref: "3d6d988 (2024-03-12, #36)"
+    entries:
+      - { line: "/.php-cs-fixer.dist.php export-ignore", ref: "a9fa919 2022-02-17" }
+
+  - repo: shuchkin/simplexlsx
+    branch: master
+    create: true
+    last_gitattributes_ref: "none"
+    entries:
+      - { line: "/examples/ export-ignore", ref: "ce6559b 2022-02-21" }
+      - { line: "/.gitattributes export-ignore", ref: "new" }
+      - { line: "/.gitignore export-ignore", ref: "new" }
+
+  - repo: swaggest/php-json-schema
+    branch: master
+    create: false
+    last_gitattributes_ref: "0ee6870 (2022-07-27, #144)"
+    entries:
+      - { line: "/benchmarks/ export-ignore", ref: "07e8698 2019-09-09" }
+
+  - repo: HubSpot/hubspot-api-php
+    branch: master
+    create: true
+    last_gitattributes_ref: "none"
+    entries:
+      - { line: "/tests/ export-ignore", ref: "6319326 2026-05-11" }
+      - { line: "/.github/ export-ignore", ref: "32e8839 2026-02-20" }
+      - { line: "/.php-cs-fixer.php export-ignore", ref: "5750de5 2022-02-15" }
+      - { line: "/.gitattributes export-ignore", ref: "new" }
+      - { line: "/.gitignore export-ignore", ref: "new" }
+
+  - repo: getsentry/sentry-laravel
+    branch: master
+    create: false
+    last_gitattributes_ref: "2aa81ac (2022-10-19, #601)"
+    entries:
+      - { line: "/phpstan.neon export-ignore", ref: "1e01c7b 2023-08-03 (#740)" }
+      - { line: "/phpstan-baseline.neon export-ignore", ref: "1d1a873 2026-03-12 (#1103)" }
+      - { line: "/.php-cs-fixer.php export-ignore", ref: "5a3f81b 2024-11-24 (#954)" }
+      - { line: "/CONTRIBUTING.md export-ignore", ref: "fbcd9bd 2024-01-23 (#839)" }
+
+  - repo: slevomat/coding-standard
+    branch: master
+    create: false
+    last_gitattributes_ref: "2d8b243 (2020-04-16)"
+    entries:
+      - { line: "/doc/ export-ignore", ref: "4c90045 2026-05-06" }
+      - { line: "/.editorconfig export-ignore", ref: "614af5a 2021-02-03" }
+
+  - repo: schmittjoh/serializer
+    branch: master
+    create: false
+    last_gitattributes_ref: "cd24e3c (2023-01-06)"
+    entries:
+      - { line: "/doc/ export-ignore", ref: "e5baafe 2025-07-17 (#1604)" }
+      - { line: "/phpstan.neon.dist export-ignore", ref: "3d937ad 2024-11-25" }
+      - { line: "/CONTRIBUTING.md export-ignore", ref: "f674fba 2026-03-26" }
+
+  - repo: bdelespierre/laravel-blade-linter
+    branch: master
+    create: false
+    last_gitattributes_ref: "2203ff7 (2024-05-14)"
+    entries:
+      - { line: "/tests/ export-ignore", ref: "2203ff7 2024-05-14" }
+      - { line: "/phpunit.xml.dist export-ignore", ref: "28082d0 2020-08-18 (initial)" }
+
+# Skipped — see README "Why some repos are excluded" for the rules
+skipped:
+  - repo: namshi/jose
+    reason: Dead repo, last push 2021-06.
+  - repo: PHPCSStandards/PHP_CodeSniffer
+    reason: Ships tests/ on purpose for downstream sniffs.
+  - repo: php-fig/http-message
+    reason: Open PR #110 by savinmikhail duplicates this.
+  - repo: MarkBaker/PHPComplex
+    reason: Open PR #28 covers most. Drafted review comment instead.
+  - repo: MarkBaker/PHPMatrix
+    reason: Open PR #28 covers most. Drafted review comment instead.
+  - repo: Mangopay/mangopay4-php-sdk
+    reason: Maintainers don't want further PRs (#495 was the last).
+  - repo: maennchen/ZipStream-PHP
+    reason: |
+      Owner has repeatedly closed export-ignore PRs (#206, #285, #339, #422).
+      They want GitHub Source Download to include tests; treat Composer as the
+      only supported distribution. Do not re-propose until upstream comments
+      out the intent in their .gitattributes or composer ships .composerignore.
