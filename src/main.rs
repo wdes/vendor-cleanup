@@ -6,6 +6,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;
 
+mod build;
 mod checks;
 mod config;
 mod github;
@@ -37,6 +38,31 @@ enum Command {
         limit: usize,
     },
 
+    /// Build a campaign YAML from a `vendor/` directory and/or a list
+    /// of `OWNER/REPO[:BRANCH]` strings.
+    Build {
+        /// Local `vendor/` directory to scan (composer install layout).
+        #[arg(long)]
+        vendor: Option<PathBuf>,
+
+        /// Explicit list of `OWNER/REPO` repositories (combine with --vendor or use alone).
+        #[arg(long = "repo", value_name = "OWNER/REPO")]
+        repos: Vec<String>,
+
+        /// Your GitHub login (will appear in branch + fork URL).
+        #[arg(long)]
+        user_login: String,
+
+        /// Where the script should keep local clones (written to the
+        /// emitted YAML; defaults to a placeholder you'll want to edit).
+        #[arg(long)]
+        fork_dir: Option<PathBuf>,
+
+        /// Output YAML path.
+        #[arg(long, short)]
+        output: PathBuf,
+    },
+
     /// Enrich a PR registry YAML with per-PR savings_bytes computed
     /// from upstream tree sizes.
     EnrichSavings {
@@ -61,6 +87,19 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.command {
         Command::Run { config, go, limit } => pr::run(&config, go, limit),
+        Command::Build {
+            vendor,
+            repos,
+            user_login,
+            fork_dir,
+            output,
+        } => build::build(build::BuildArgs {
+            vendor,
+            repos,
+            user_login,
+            fork_dir,
+            output,
+        }),
         Command::EnrichSavings {
             registry,
             force,

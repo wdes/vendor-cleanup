@@ -49,11 +49,33 @@ This produces a single `vendor-cleanup` binary on your `$PATH`.
 
 ```bash
 gh auth login                # if not already
-vendor-cleanup run --config examples/sample-campaign.yaml          # dry-run
-vendor-cleanup run --config examples/sample-campaign.yaml --go     # really do it
-vendor-cleanup run --config <file> --go --limit 2                  # stop after 2 PRs
 
-# Enrich a registry YAML with per-PR upstream byte sizes
+# 1. Build a campaign YAML from a project's vendor/ folder.
+#    Scans every package, resolves the upstream repo via composer.json,
+#    drops anything already excluded by upstream's .gitattributes,
+#    drops paths that no longer exist upstream, and cites the last
+#    commit ref + date that touched each surviving entry.
+vendor-cleanup build \
+    --vendor /path/to/your/project/vendor \
+    --user-login your-gh-handle \
+    --fork-dir /path/to/your/forks \
+    --output campaign.yaml
+
+# Or build from an explicit repo list (uses the default candidate set).
+vendor-cleanup build \
+    --repo schmittjoh/serializer \
+    --repo phar-io/manifest \
+    --user-login your-gh-handle \
+    --output campaign.yaml
+
+# 2. Dry-run the campaign to review every diff.
+vendor-cleanup run --config campaign.yaml
+
+# 3. Fire when ready (random 10-20s sleep between PRs).
+vendor-cleanup run --config campaign.yaml --go
+vendor-cleanup run --config campaign.yaml --go --limit 2   # stop after 2
+
+# Enrich a registry YAML with per-PR upstream byte sizes.
 vendor-cleanup enrich-savings registry/williamdes-cleanup-prs.yaml
 ```
 
