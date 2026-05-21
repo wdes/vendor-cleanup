@@ -56,6 +56,16 @@ pub struct Entry {
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct RemoveEntry {
+    /// Path (with leading slash, may have trailing slash) to remove
+    /// from `.gitattributes` because it's stale (file no longer
+    /// exists upstream).
+    pub line: String,
+    /// Free-text reason shown in the PR body.
+    pub reason: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Target {
     pub repo: String,
     #[serde(default = "default_branch_name")]
@@ -65,6 +75,12 @@ pub struct Target {
     #[serde(default)]
     pub last_gitattributes_ref: Option<String>,
     pub entries: Vec<Entry>,
+    /// Stale `export-ignore` entries to remove from `.gitattributes`.
+    /// Filled by the builder when an excluded path no longer exists
+    /// in upstream HEAD (e.g., `.travis.yml` after a GitHub Actions
+    /// migration). Empty by default.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub remove: Vec<RemoveEntry>,
 }
 
 fn default_branch_name() -> String {

@@ -73,6 +73,40 @@ pub fn strip_slashes(s: &str) -> String {
     s.trim_start_matches('/').trim_end_matches('/').to_string()
 }
 
+/// Remove every `export-ignore` line in `content` whose normalized
+/// path appears in `paths_to_remove`. Comparison is slash-insensitive
+/// (so `"travis.yml"` removes both `/travis.yml` and `/.travis.yml`
+/// variants when normalized identically; pass paths without the
+/// leading dot if you want exact match — strip_slashes is applied to
+/// both sides).
+pub fn apply_removals(content: &str, paths_to_remove: &[&str]) -> String {
+    if paths_to_remove.is_empty() {
+        return content.to_string();
+    }
+    let normalized: std::collections::HashSet<String> =
+        paths_to_remove.iter().map(|p| strip_slashes(p)).collect();
+    let ei_re = Regex::new(r"^\s*/?([^\s]+?)/?\s+export-ignore\s*$").unwrap();
+    let mut out = String::with_capacity(content.len());
+    let preserve_trailing_nl = content.ends_with('\n');
+    let lines: Vec<&str> = content.lines().collect();
+    for line in &lines {
+        if let Some(caps) = ei_re.captures(line) {
+            if normalized.contains(&caps[1]) {
+                continue;
+            }
+        }
+        out.push_str(line);
+        out.push('\n');
+    }
+    if !preserve_trailing_nl {
+        // Strip the trailing newline we just added if the input didn't have one.
+        if out.ends_with('\n') {
+            out.pop();
+        }
+    }
+    out
+}
+
 /// Apply the given entries to `content`, respecting the detected style.
 /// Returns the new content. Entries whose path is already present are deduped.
 pub fn apply_entries(content: &str, entries_to_add: &[&str], style: Style) -> String {
@@ -205,6 +239,48 @@ mod tests {
         // proposing "/tests/" (with trailing slash) should still dedup
         let new = apply_entries(content, &["/tests/ export-ignore"], Style::detect(content));
         assert_eq!(new.lines().count(), 1);
+    }
+
+    #[test]
+    fn apply_removals_drops_named_lines() {
+        let content = "\
+*.php text eol=lf
+/.travis.yml export-ignore
+/phpunit.xml export-ignore
+/tests/ export-ignore
+";
+        let out = apply_removals(content, &["/.travis.yml"]);
+        assert!(!out.contains(".travis.yml"));
+        assert!(out.contains("/phpunit.xml export-ignore"));
+        assert!(out.contains("/tests/ export-ignore"));
+        assert!(out.contains("*.php text eol=lf"));
+    }
+
+    #[test]
+    fn apply_removals_is_slash_insensitive() {
+        let content = "/.travis.yml export-ignore\n";
+        // Removal passed without leading slash should still match
+        let out = apply_removals(content, &[".travis.yml"]);
+        assert_eq!(out, "");
+    }
+
+    #[test]
+    fn apply_removals_no_op_when_empty() {
+        let content = "/tests export-ignore\n";
+        let out = apply_removals(content, &[]);
+        assert_eq!(out, content);
+    }
+
+    #[test]
+    fn apply_removals_keeps_unrelated_export_ignore() {
+        // Removing /.travis.yml must NOT remove unrelated entries that contain "travis" substring.
+        let content = "\
+/.travis.yml export-ignore
+/.travis-deploy/ export-ignore
+";
+        let out = apply_removals(content, &["/.travis.yml"]);
+        assert!(!out.contains(".travis.yml"));
+        assert!(out.contains(".travis-deploy"));
     }
 
     #[test]

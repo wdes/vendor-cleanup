@@ -79,6 +79,42 @@ vendor-cleanup run --config campaign.yaml --go --limit 2   # stop after 2
 vendor-cleanup enrich-savings registry/williamdes-cleanup-prs.yaml
 ```
 
+### Real example: building a campaign from a hand-vendored project
+
+[Dolibarr](https://github.com/Dolibarr/dolibarr) ships dependencies under
+`htdocs/includes/` with an irregular layout (not standard composer
+install). For non-standard layouts, pass explicit `--repo` flags. After
+manually identifying which embedded packages still ship dev files in
+their upstream dist:
+
+```bash
+vendor-cleanup build \
+    --repo fruux/sabre-event \
+    --repo fruux/sabre-http \
+    --repo globalcitizen/php-iban \
+    --repo mike42/escpos-php \
+    --repo phayes/geoPHP \
+    --repo php-fig/simple-cache \
+    --repo serbanghita/Mobile-Detect \
+    --repo webklex/php-imap \
+    --user-login your-gh-handle \
+    --fork-dir /mnt/Dev/forks \
+    --output dolibarr-campaign.yaml
+
+vendor-cleanup run --config dolibarr-campaign.yaml          # dry-run
+vendor-cleanup run --config dolibarr-campaign.yaml --go     # fire
+```
+
+### What happens when the project migrated from Travis to GitHub Actions
+
+If an upstream's `.gitattributes` still has `.travis.yml export-ignore`
+but the file no longer exists in upstream HEAD, `build` detects the
+stale entry, proposes removing it, and (when `.github/` exists upstream
+and isn't already excluded) proposes adding `/.github/ export-ignore`
+alongside. The resulting PR body is structured into two sections:
+"Stale entries to remove" and "Entries to add", so reviewers see the
+intent at a glance.
+
 ## Configuration
 
 YAML file. See `examples/` for a real sample.

@@ -19,7 +19,7 @@
 //! .gitattributes for excluded paths, scanning a vendor dir) are unit
 //! tested independently.
 
-use crate::config::{Config, Defaults, Entry, Target};
+use crate::config::{Config, Defaults, Entry, RemoveEntry, Target};
 use crate::github;
 use anyhow::{anyhow, Context, Result};
 use regex::Regex;
@@ -101,6 +101,17 @@ pub fn extract_github_slug(url: &str) -> Option<String> {
     // Strip trailing .git just in case the regex left it
     let repo = repo.trim_end_matches(".git");
     Some(format!("{owner}/{repo}"))
+}
+
+/// Paths that historically signal a Travis CI configuration. When one
+/// of these is still in `.gitattributes` but the file no longer
+/// exists upstream, the repo has migrated to GitHub Actions but
+/// forgot to clean up the stale `export-ignore` entry. We then also
+/// propose adding `/.github` so the new CI dir is excluded.
+pub const TRAVIS_FILES: &[&str] = &[".travis.yml", ".travis-ci.yml"];
+
+fn strip_slashes_str(s: &str) -> String {
+    s.trim_start_matches('/').trim_end_matches('/').to_string()
 }
 
 /// Parse an upstream `.gitattributes` content and return the set of
@@ -247,6 +258,72 @@ pub fn build(args: BuildArgs) -> Result<()> {
     Ok(())
 }
 
+/// Detect stale `export-ignore` entries in upstream `.gitattributes`:
+/// files/dirs declared as excluded that no longer exist in upstream
+/// HEAD. Returns the list of paths to remove with a short reason.
+///
+/// `excluded_paths` is the normalized set from
+/// `parsed_excluded_paths_from_gitattributes`.
+/// `path_exists` is a callback that returns true when the path still
+/// exists at upstream HEAD (we inject this so the function is unit-
+/// testable without hitting the network).
+pub fn detect_stale_entries<F>(
+    excluded_paths: &HashSet<String>,
+    mut path_exists: F,
+) -> Vec<RemoveEntry>
+where
+    F: FnMut(&str) -> bool,
+{
+    let mut out = Vec::new();
+    let mut sorted: Vec<&String> = excluded_paths.iter().collect();
+    sorted.sort();
+    for norm in sorted {
+        if path_exists(norm) {
+            continue;
+        }
+        let line = format!("/{norm} export-ignore");
+        let reason = if TRAVIS_FILES.contains(&norm.as_str()) {
+            "Travis CI config no longer exists upstream (project migrated to GitHub Actions)."
+                .to_string()
+        } else {
+            format!("`{norm}` no longer exists in upstream HEAD.")
+        };
+        out.push(RemoveEntry { line, reason });
+    }
+    out
+}
+
+/// When a removal list contains a Travis file, and `.github` exists
+/// upstream and isn't already excluded, return Some(github_addition).
+/// Used by the builder to surface the Travis → GitHub Actions
+/// migration in a single PR.
+pub fn github_addition_for_travis_removal<F>(
+    removals: &[RemoveEntry],
+    excluded_paths: &HashSet<String>,
+    mut path_exists: F,
+) -> Option<(&'static str, &'static str)>
+where
+    F: FnMut(&str) -> bool,
+{
+    let has_travis_removal = removals.iter().any(|r| {
+        let norm = strip_slashes_str(r.line.split_whitespace().next().unwrap_or(""));
+        TRAVIS_FILES.contains(&norm.as_str())
+    });
+    if !has_travis_removal {
+        return None;
+    }
+    if excluded_paths.contains(".github") {
+        return None;
+    }
+    if !path_exists(".github") {
+        return None;
+    }
+    Some((
+        ".github/",
+        "Added alongside the Travis cleanup since CI lives under .github/workflows/ now.",
+    ))
+}
+
 /// Build a single Target for a repo, taking a list of candidate paths
 /// (from a vendor scan or the default list). Returns Ok(None) when no
 /// entries survive the filter.
@@ -284,6 +361,27 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
         entries.push(Entry { line, r#ref });
     }
 
+    // Stale-entry detection: look at what upstream excludes and confirm
+    // each path still exists. If not, mark for removal. Travis -> .github
+    // migration is the most common case we want to fix.
+    let mut removals: Vec<RemoveEntry> = Vec::new();
+    if !create {
+        let stale = detect_stale_entries(&already_excluded, |p| {
+            upstream_path_exists(slug, &branch, p).unwrap_or(true)
+        });
+        if let Some((gh_path, reason)) =
+            github_addition_for_travis_removal(&stale, &already_excluded, |p| {
+                upstream_path_exists(slug, &branch, p).unwrap_or(false)
+            })
+        {
+            entries.push(Entry {
+                line: format!("/{gh_path} export-ignore"),
+                r#ref: reason.to_string(),
+            });
+        }
+        removals = stale;
+    }
+
     if create {
         // When .gitattributes does not exist upstream, also add housekeeping entries.
         entries.push(Entry {
@@ -296,7 +394,7 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
         });
     }
 
-    if entries.is_empty() {
+    if entries.is_empty() && removals.is_empty() {
         return Ok(None);
     }
 
@@ -306,6 +404,7 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
         create,
         last_gitattributes_ref: last_ga_ref,
         entries,
+        remove: removals,
     }))
 }
 
@@ -563,5 +662,134 @@ mod tests {
             }
         }]);
         assert_eq!(commit_summary_first(&v), Some("abc1234 2024-01-15".into()));
+    }
+
+    // ---- stale-entry detection / Travis -> GitHub Actions migration ----
+
+    #[test]
+    fn detect_stale_entries_flags_missing_paths() {
+        let mut excluded = HashSet::new();
+        excluded.insert(".travis.yml".to_string());
+        excluded.insert("tests".to_string());
+        excluded.insert("phpunit.xml.dist".to_string());
+
+        // tests/ exists, phpunit.xml.dist exists, .travis.yml is gone.
+        let stale = detect_stale_entries(&excluded, |p| p != ".travis.yml");
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].line, "/.travis.yml export-ignore");
+        assert!(
+            stale[0].reason.contains("GitHub Actions"),
+            "Travis removal reason should call out the migration, got: {}",
+            stale[0].reason
+        );
+    }
+
+    #[test]
+    fn detect_stale_entries_handles_travis_ci_yml_variant() {
+        let mut excluded = HashSet::new();
+        excluded.insert(".travis-ci.yml".to_string());
+        let stale = detect_stale_entries(&excluded, |_| false);
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].line, "/.travis-ci.yml export-ignore");
+        assert!(stale[0].reason.contains("GitHub Actions"));
+    }
+
+    #[test]
+    fn detect_stale_entries_uses_generic_reason_for_non_travis() {
+        let mut excluded = HashSet::new();
+        excluded.insert("some-old-folder".to_string());
+        let stale = detect_stale_entries(&excluded, |_| false);
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].line, "/some-old-folder export-ignore");
+        assert!(stale[0].reason.contains("no longer exists"));
+        assert!(!stale[0].reason.contains("GitHub Actions"));
+    }
+
+    #[test]
+    fn detect_stale_entries_returns_empty_when_all_exist() {
+        let mut excluded = HashSet::new();
+        excluded.insert("tests".to_string());
+        excluded.insert(".travis.yml".to_string());
+        let stale = detect_stale_entries(&excluded, |_| true);
+        assert!(stale.is_empty());
+    }
+
+    #[test]
+    fn travis_removal_triggers_github_when_github_exists() {
+        let mut excluded = HashSet::new();
+        excluded.insert(".travis.yml".to_string());
+        let stale = detect_stale_entries(&excluded, |_| false);
+        let res = github_addition_for_travis_removal(&stale, &excluded, |p| p == ".github");
+        assert!(res.is_some());
+        let (path, reason) = res.unwrap();
+        assert_eq!(path, ".github/");
+        assert!(reason.contains("Travis"));
+    }
+
+    #[test]
+    fn travis_removal_does_not_trigger_github_when_already_excluded() {
+        let mut excluded = HashSet::new();
+        excluded.insert(".travis.yml".to_string());
+        excluded.insert(".github".to_string());
+        let stale = detect_stale_entries(&excluded, |p| p == ".github");
+        // .github is excluded → not stale; only .travis.yml is stale.
+        // But .github IS already in excluded set → don't propose adding again.
+        let res = github_addition_for_travis_removal(&stale, &excluded, |_| true);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn travis_removal_does_not_trigger_github_when_github_missing_upstream() {
+        let mut excluded = HashSet::new();
+        excluded.insert(".travis.yml".to_string());
+        let stale = detect_stale_entries(&excluded, |_| false);
+        let res = github_addition_for_travis_removal(&stale, &excluded, |p| p != ".github");
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn no_github_addition_without_travis_removal() {
+        // Some unrelated stale entry, no travis involvement -> no github addition.
+        let mut excluded = HashSet::new();
+        excluded.insert("dead-folder".to_string());
+        let stale = detect_stale_entries(&excluded, |_| false);
+        let res = github_addition_for_travis_removal(&stale, &excluded, |_| true);
+        assert!(res.is_none());
+    }
+
+    #[test]
+    fn travis_to_github_e2e() {
+        use crate::style::{apply_entries, apply_removals, Style};
+
+        let before = "\
+*.php text eol=lf
+/.travis.yml export-ignore
+/phpunit.xml.dist export-ignore
+/tests/ export-ignore
+";
+        let excluded = parsed_excluded_paths_from_gitattributes(before);
+        assert!(excluded.contains(".travis.yml"));
+
+        let upstream_has = |p: &str| matches!(p, "tests" | "phpunit.xml.dist" | ".github");
+        let stale = detect_stale_entries(&excluded, upstream_has);
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].line, "/.travis.yml export-ignore");
+
+        let gh = github_addition_for_travis_removal(&stale, &excluded, upstream_has);
+        let (gh_path, _) = gh.expect("should propose adding /.github/");
+        assert_eq!(gh_path, ".github/");
+
+        let after_remove = apply_removals(before, &["/.travis.yml"]);
+        assert!(!after_remove.contains(".travis.yml"));
+
+        let new_line = format!("/{gh_path} export-ignore");
+        let style = Style::detect(&after_remove);
+        let final_content = apply_entries(&after_remove, &[&new_line], style);
+
+        assert!(!final_content.contains(".travis.yml"));
+        assert!(final_content.contains("/.github/ export-ignore"));
+        assert!(final_content.contains("/phpunit.xml.dist export-ignore"));
+        assert!(final_content.contains("/tests/ export-ignore"));
+        assert!(final_content.contains("*.php text eol=lf"));
     }
 }

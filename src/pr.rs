@@ -7,7 +7,7 @@
 use crate::checks;
 use crate::config::{Config, Target};
 use crate::github;
-use crate::style::{apply_entries, Style};
+use crate::style::{apply_entries, apply_removals, Style};
 use anyhow::{anyhow, Context, Result};
 use rand::Rng;
 use std::path::{Path, PathBuf};
@@ -95,7 +95,21 @@ fn process_target(t: &Target, cfg: &Config, go: bool) -> Result<Outcome> {
         .last_gitattributes_ref
         .clone()
         .unwrap_or_else(|| "N/A".into());
-    let body = build_pr_body(&last_ga, &kept);
+    let body = build_pr_body(&last_ga, &kept, &t.remove);
+
+    // Surface stale entries (e.g., a leftover `.travis.yml` excluded but no
+    // longer present upstream) in both dry-run and real runs so the user
+    // sees what we're cleaning up.
+    if !t.remove.is_empty() {
+        println!(
+            "    ! {} stale entr{} in upstream `.gitattributes` will be removed:",
+            t.remove.len(),
+            if t.remove.len() == 1 { "y" } else { "ies" }
+        );
+        for r in &t.remove {
+            println!("      - {}   ({})", r.line, r.reason);
+        }
+    }
 
     if !go {
         let action = if t.create { "CREATE" } else { "APPEND" };
@@ -184,8 +198,16 @@ fn process_target(t: &Target, cfg: &Config, go: bool) -> Result<Outcome> {
         );
         (c, s)
     };
+    // First apply removals (stale entries like a leftover `.travis.yml` after
+    // GH Actions migration), then append the new entries.
+    let removal_paths: Vec<&str> = t
+        .remove
+        .iter()
+        .map(|r| r.line.split_whitespace().next().unwrap_or(""))
+        .collect();
+    let after_removals = apply_removals(&content, &removal_paths);
     let entry_strs: Vec<&str> = kept.iter().map(|p| p.0.as_str()).collect();
-    let new_content = apply_entries(&content, &entry_strs, style);
+    let new_content = apply_entries(&after_removals, &entry_strs, style);
     if new_content == content && !t.create {
         return Ok(Outcome::Skipped("no diff after dedup".into()));
     }
@@ -251,16 +273,33 @@ fn run_cmd(argv: &[&str]) -> Result<()> {
     Ok(())
 }
 
-pub fn build_pr_body(last_ga: &str, entries: &[&(String, String)]) -> String {
+pub fn build_pr_body(
+    last_ga: &str,
+    entries: &[&(String, String)],
+    removals: &[crate::config::RemoveEntry],
+) -> String {
     let mut s = String::from(
         "This avoids shipping dev/tooling files in the composer dist that aren't needed at runtime.\n\n",
     );
-    s.push_str(&format!(
-        "Last `.gitattributes` update was {last_ga}. The files below have been added or modified \
-since, and are still included in the composer dist:\n"
-    ));
-    for e in entries {
-        s.push_str(&format!("- `{}` - last touched in {}\n", e.0, e.1));
+    s.push_str(&format!("Last `.gitattributes` update was {last_ga}.\n"));
+    if !removals.is_empty() {
+        s.push_str(
+            "\n### Stale entries to remove\n\
+             These `export-ignore` rules point to files that no longer exist upstream:\n",
+        );
+        for r in removals {
+            s.push_str(&format!("- `{}` - {}\n", r.line, r.reason));
+        }
+    }
+    if !entries.is_empty() {
+        s.push_str(
+            "\n### Entries to add\n\
+             Files added or modified since the last `.gitattributes` update, still \
+             shipped in the composer dist:\n",
+        );
+        for e in entries {
+            s.push_str(&format!("- `{}` - last touched in {}\n", e.0, e.1));
+        }
     }
     s.push_str("\nBackground reading: https://blog.madewithlove.be/post/gitattributes/");
     s
@@ -283,7 +322,7 @@ mod tests {
             ),
         ];
         let refs: Vec<&(String, String)> = entries.iter().collect();
-        let body = build_pr_body("xyz9876 (2023-01-01)", &refs);
+        let body = build_pr_body("xyz9876 (2023-01-01)", &refs, &[]);
         assert!(body.contains("xyz9876 (2023-01-01)"));
         assert!(body.contains("/tests/ export-ignore"));
         assert!(body.contains("abc1234 2025-01-01"));
@@ -291,6 +330,29 @@ mod tests {
         assert!(body.contains("deadbee 2024-06-06"));
         assert!(body.contains("Background reading:"));
         // No em-dash anywhere in the body
+        assert!(!body.contains('\u{2014}'));
+    }
+
+    #[test]
+    fn body_groups_removals_and_additions() {
+        use crate::config::RemoveEntry;
+        let entries = [(
+            "/.github/ export-ignore".to_string(),
+            "Added alongside the Travis cleanup".to_string(),
+        )];
+        let refs: Vec<&(String, String)> = entries.iter().collect();
+        let removals = vec![RemoveEntry {
+            line: "/.travis.yml export-ignore".to_string(),
+            reason:
+                "Travis CI config no longer exists upstream (project migrated to GitHub Actions)."
+                    .to_string(),
+        }];
+        let body = build_pr_body("aaa1111 (2020-01-01)", &refs, &removals);
+        assert!(body.contains("### Stale entries to remove"));
+        assert!(body.contains("/.travis.yml export-ignore"));
+        assert!(body.contains("migrated to GitHub Actions"));
+        assert!(body.contains("### Entries to add"));
+        assert!(body.contains("/.github/ export-ignore"));
         assert!(!body.contains('\u{2014}'));
     }
 }
