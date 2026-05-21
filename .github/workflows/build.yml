@@ -1,0 +1,61 @@
+name: Build
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+env:
+  RUST_VERSION: "1.95.0"
+
+jobs:
+  build:
+    name: Build, test, lint, package
+    runs-on: ubuntu-latest
+    outputs:
+      deb-artifact-id: ${{ steps.upload-deb.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          components: clippy, rustfmt
+      - name: Cache cargo artifacts
+        uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --locked --all-targets
+      - name: Run tests
+        run: cargo test --locked --all-targets --no-fail-fast
+      - name: Check formatting
+        run: cargo fmt -- --check
+      - name: Clippy
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Build .deb package
+        run: cargo install cargo-deb && cargo deb --locked
+      - name: Upload .deb package
+        id: upload-deb
+        uses: actions/upload-artifact@v7
+        with:
+          name: vendor-cleanup-deb
+          path: target/debian/*.deb
+          retention-days: 5
+          archive: false
+
+  integration:
+    name: Install .deb on debian:trixie-slim
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ needs.build.outputs.deb-artifact-id }}
+          path: deb
+          merge-multiple: true
+          skip-decompress: true
+      - name: Install .deb in container and check --version
+        run: |
+          docker run --rm \
+              -v "$PWD/deb:/debs:ro" \
+              debian:trixie-slim \
+              sh -c "apt-get update -qq && apt-get install -y /debs/*.deb && vendor-cleanup --version"

@@ -1,0 +1,49 @@
+[package]
+name = "vendor-cleanup"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["William Desportes <williamdes@wdes.fr>"]
+license = "MPL-2.0"
+description = "Open .gitattributes export-ignore PRs at scale against PHP/Composer packages that still ship dev files in their composer dist."
+repository = "https://github.com/wdes/vendor-cleanup"
+readme = "README.md"
+keywords = ["composer", "gitattributes", "export-ignore", "php"]
+categories = ["command-line-utilities", "development-tools"]
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+regex = "1"
+
+[package.metadata.deb]
+section = "devel"
+priority = "optional"
+depends = "libc6, libgcc-s1, git"
+recommends = "gh"
+maintainer = "William Desportes <williamdes@wdes.fr>"
+extended-description = """\
+Open .gitattributes export-ignore PRs at scale against PHP/Composer packages
+that still ship dev files (tests/, phpunit.xml, .github/, ...) in their
+composer dist. Reads a YAML config and performs three pre-flight checks
+(idempotency, rejection history, upstream existence) before forking, branching,
+modifying .gitattributes, pushing, and opening the PR. Requires the GitHub CLI
+(`gh`) at runtime."""
+
+[dev-dependencies]
+tempfile = "3"
+pretty_assertions = "1"
+
+[[bin]]
+name = "vendor-cleanup"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

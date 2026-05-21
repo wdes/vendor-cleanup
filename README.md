@@ -35,13 +35,26 @@ is the supported fix; this tool batches the PR-opening across many libraries.
 - **Idempotent**: skip repos where a PR already exists on the same head branch.
 - **Skip list with reasons**: track repos that maintainers won't accept.
 
+## Install
+
+Requires Rust 1.75+ and the `gh` CLI (logged in via `gh auth login`).
+
+```bash
+cargo install --path .
+```
+
+This produces a single `vendor-cleanup` binary on your `$PATH`.
+
 ## Quick start
 
 ```bash
 gh auth login                # if not already
-./bin/vendor-cleanup --config examples/sample-campaign.yaml         # dry-run
-./bin/vendor-cleanup --config examples/sample-campaign.yaml --go    # really do it
-./bin/vendor-cleanup --config <file> --go --limit=2              # stop after 2 PRs
+vendor-cleanup run --config examples/sample-campaign.yaml          # dry-run
+vendor-cleanup run --config examples/sample-campaign.yaml --go     # really do it
+vendor-cleanup run --config <file> --go --limit 2                  # stop after 2 PRs
+
+# Enrich a registry YAML with per-PR upstream byte sizes
+vendor-cleanup enrich-savings registry/williamdes-cleanup-prs.yaml
 ```
 
 ## Configuration
@@ -100,9 +113,17 @@ Background reading: https://blog.madewithlove.be/post/gitattributes/
 
 ## Helping populate the config
 
-There's a companion scanner that reads a project's `composer.lock` + `vendor/`
-and emits a draft YAML config with last-touch commit refs per entry. See
-`bin/vendor-cleanup-scan`. (TODO: extract from internal use.)
+A companion scanner that reads a project's `composer.lock` + `vendor/`
+and emits a draft YAML config with last-touch commit refs per entry is
+on the roadmap.
+
+## Development
+
+```bash
+cargo build
+cargo test            # 37 tests (unit + integration)
+cargo clippy --all-targets -- -D warnings
+```
 
 ## License
 
