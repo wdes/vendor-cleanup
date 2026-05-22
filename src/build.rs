@@ -63,8 +63,11 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     ".travis.yml",
     "appveyor.yml",
     ".gitlab-ci.yml",
+    "codecov.yml",
     "Makefile",
     "CONTRIBUTING.md",
+    "CLAUDE.md",
+    "AGENTS.md",
     ".phpstorm.meta.php",
     "splitsh.json",
 ];
