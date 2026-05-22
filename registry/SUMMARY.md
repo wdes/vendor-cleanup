@@ -6,8 +6,8 @@ Generated: 2026-05-22
 
 - Total PRs touching `.gitattributes`: **88**
   - merged: 70
-  - closed: 11
-  - open: 7
+  - closed: 12
+  - open: 6
 - Total bytes saved (merged PRs): **11,361,500 B** (10.84 MB)
   - of which on own / phpmyadmin repos: 8,098,156 B
   - of which on third-party packages: **3,263,344 B** (3.11 MB)

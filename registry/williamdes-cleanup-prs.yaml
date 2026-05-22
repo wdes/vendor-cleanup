@@ -1,12 +1,12 @@
 metadata:
   author: williamdes
   description: Registry of cleanup PRs (touching .gitattributes) opened over the years.
-  generated_at: 2026-05-22
+  generated_at: '2026-05-22'
   totals:
     total_prs: 88
     merged: 70
-    closed: 11
-    open: 7
+    closed: 12
+    open: 6
 repos:
 - repo: antonioribeiro/google2fa
   prs:
@@ -151,10 +151,10 @@ repos:
   prs:
   - pr: 13
     title: Update .gitattributes to exclude dev files from composer dist
-    state: OPEN
+    state: CLOSED
     url: https://github.com/bdelespierre/laravel-blade-linter/pull/13
     created_at: 2026-05-20
-    closed_at: null
+    closed_at: '2026-05-22'
     merged_at: null
     additions: 2
     deletions: 0
@@ -162,6 +162,8 @@ repos:
     files_touched:
     - .gitattributes
     savings_bytes: null
+    close_reason: Force-pushed to zero diff after realising the upstream .gitattributes already had the proposed entries written
+      and intentionally commented out. GitHub auto-closed the PR.
 - repo: brick/math
   prs:
   - pr: 110
