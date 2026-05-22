@@ -261,6 +261,10 @@ pub fn build(args: BuildArgs) -> Result<()> {
     // Step 2: enrich each pair into a Target.
     let mut targets: Vec<Target> = Vec::new();
     for (slug, candidates) in pairs {
+        if let Some(reason) = crate::checks::denylisted_repo(&slug) {
+            eprintln!("  - {slug}: skipped (denylisted: {reason})");
+            continue;
+        }
         match build_one_target(&slug, &candidates) {
             Ok(Some(t)) => {
                 let n = t.entries.len();
@@ -342,14 +346,30 @@ where
     out
 }
 
-/// Whitelist: any path that starts with `.git` and is already listed in
-/// the maintainer's `.gitattributes` is treated as intentional and never
-/// proposed for stale removal — even if it doesn't currently exist
-/// upstream. Examples: `.gitattributes`, `.gitignore`, `.gitkeep`,
-/// `.gitmodules`, `.github`, `.git-blame-ignore-revs`. The rule sitting
-/// there protects against the file/dir reappearing later.
+/// Explicit allowlist of conventional `.git*` filenames/directories that
+/// we treat as intentional when already listed in `.gitattributes`,
+/// even if they don't currently exist upstream. The rule sitting there
+/// protects against the file/dir reappearing later.
+const DOT_GIT_WHITELIST: &[&str] = &[
+    ".gitattributes",
+    ".gitignore",
+    ".gitkeep",
+    ".gitmodules",
+    ".git-blame-ignore-revs",
+    ".github",
+    ".gitlab",
+    ".gitlab-ci.yml",
+];
+
+/// True when `norm` matches a known `.git*` convention. Uses an explicit
+/// allowlist instead of a `.starts_with(".git")` prefix to avoid catching
+/// arbitrary `.git-foo` files that aren't conventional.
 fn is_defensive_git_path(norm: &str) -> bool {
-    norm.starts_with(".git")
+    if DOT_GIT_WHITELIST.contains(&norm) {
+        return true;
+    }
+    // Anything inside .github/ or .gitlab/ is also conventional.
+    norm.starts_with(".github/") || norm.starts_with(".gitlab/")
 }
 
 /// When a removal list contains a Travis file, and `.github` exists
@@ -848,15 +868,24 @@ mod tests {
     }
 
     #[test]
-    fn is_defensive_git_path_matches_all_dot_git_prefixes() {
+    fn is_defensive_git_path_uses_explicit_allowlist() {
+        // Conventional .git* names — whitelisted
         assert!(is_defensive_git_path(".gitattributes"));
         assert!(is_defensive_git_path(".gitignore"));
         assert!(is_defensive_git_path(".gitkeep"));
         assert!(is_defensive_git_path(".gitmodules"));
         assert!(is_defensive_git_path(".git-blame-ignore-revs"));
         assert!(is_defensive_git_path(".github"));
+        assert!(is_defensive_git_path(".gitlab"));
+        assert!(is_defensive_git_path(".gitlab-ci.yml"));
+        // Subpaths of conventional directories
         assert!(is_defensive_git_path(".github/workflows"));
-        // Non-.git paths aren't defensive
+        assert!(is_defensive_git_path(".gitlab/merge_request_templates"));
+        // Unconventional `.git-` names are NOT whitelisted (explicit allowlist
+        // avoids accidentally matching arbitrary paths).
+        assert!(!is_defensive_git_path(".git-stuff"));
+        assert!(!is_defensive_git_path(".git-hooks"));
+        // Non-.git paths
         assert!(!is_defensive_git_path("tests"));
         assert!(!is_defensive_git_path("phpunit.xml"));
     }

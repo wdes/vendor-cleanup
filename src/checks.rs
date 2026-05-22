@@ -8,6 +8,24 @@ use crate::github;
 use anyhow::Result;
 use chrono::Datelike;
 
+/// Repos where the maintainer has signalled they don't welcome our
+/// `.gitattributes` cleanup contributions. Skip both scanning and PR
+/// opening for these.
+const DENYLISTED_REPOS: &[(&str, &str)] = &[(
+    "mockery/mockery",
+    "maintainer pushed back on our prior cleanup changes",
+)];
+
+/// Returns Some(reason) when `repo` is on the static denylist. Match is
+/// case-insensitive against `OWNER/REPO`.
+pub fn denylisted_repo(repo: &str) -> Option<&'static str> {
+    let key = repo.to_ascii_lowercase();
+    DENYLISTED_REPOS
+        .iter()
+        .find(|(slug, _)| slug.eq_ignore_ascii_case(&key))
+        .map(|(_, reason)| *reason)
+}
+
 /// Returns Some(reason) when a non-author closed a similar `.gitattributes`
 /// PR in `repo` within the last `max_age_years`. Returns None otherwise.
 pub fn rejection_history(
@@ -136,5 +154,15 @@ mod tests {
                 "expected co-author trailer for {r}"
             );
         }
+    }
+
+    #[test]
+    fn denylist_skips_mockery() {
+        assert!(denylisted_repo("mockery/mockery").is_some());
+        // Case-insensitive
+        assert!(denylisted_repo("Mockery/Mockery").is_some());
+        // Not on list
+        assert!(denylisted_repo("phar-io/manifest").is_none());
+        assert!(denylisted_repo("getsentry/sentry-laravel").is_none());
     }
 }

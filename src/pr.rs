@@ -64,13 +64,18 @@ fn process_target(t: &Target, cfg: &Config, go: bool) -> Result<Outcome> {
         t.entries.len()
     );
 
-    // 1. Idempotency
+    // 1. Repo denylist (maintainers who pushed back on past contributions)
+    if let Some(reason) = checks::denylisted_repo(&t.repo) {
+        return Ok(Outcome::Skipped(format!("denylisted: {reason}")));
+    }
+
+    // 2. Idempotency
     let n = github::count_prs_from_head(&t.repo, &cfg.defaults.user_login, &cfg.defaults.branch)?;
     if n >= 1 {
         return Ok(Outcome::Skipped("PR already exists".into()));
     }
 
-    // 2. Rejection-history check
+    // 3. Rejection-history check
     if let Some(reason) = checks::rejection_history(&t.repo, &cfg.defaults.user_login, 5)? {
         return Ok(Outcome::Skipped(format!("rejection history: {reason}")));
     }
