@@ -317,6 +317,19 @@ where
         if path_exists(norm) {
             continue;
         }
+        // Defensive .git* entries (`.gitattributes`, `.gitignore`, `.gitkeep`,
+        // `.gitmodules`, etc.) are commonly listed even when the file isn't
+        // committed yet. They're harmless rules, and proposing their removal
+        // creates churn for no benefit. Skip them.
+        if is_defensive_git_path(norm) {
+            continue;
+        }
+        // Glob patterns (`*`, `?`, `[`) can't be checked against the contents
+        // API and aren't really "files that exist or don't" anyway. Treat
+        // them as not-stale (the maintainer wrote a pattern on purpose).
+        if norm.contains('*') || norm.contains('?') || norm.contains('[') {
+            continue;
+        }
         let line = format!("/{norm} export-ignore");
         let reason = if TRAVIS_FILES.contains(&norm.as_str()) {
             "Travis CI config no longer exists upstream (project migrated to GitHub Actions)."
@@ -327,6 +340,16 @@ where
         out.push(RemoveEntry { line, reason });
     }
     out
+}
+
+/// Whitelist: any path that starts with `.git` and is already listed in
+/// the maintainer's `.gitattributes` is treated as intentional and never
+/// proposed for stale removal — even if it doesn't currently exist
+/// upstream. Examples: `.gitattributes`, `.gitignore`, `.gitkeep`,
+/// `.gitmodules`, `.github`, `.git-blame-ignore-revs`. The rule sitting
+/// there protects against the file/dir reappearing later.
+fn is_defensive_git_path(norm: &str) -> bool {
+    norm.starts_with(".git")
 }
 
 /// When a removal list contains a Travis file, and `.github` exists
@@ -798,6 +821,61 @@ mod tests {
         assert_eq!(stale[0].line, "/some-old-folder export-ignore");
         assert!(stale[0].reason.contains("no longer exists"));
         assert!(!stale[0].reason.contains("GitHub Actions"));
+    }
+
+    #[test]
+    fn detect_stale_entries_never_proposes_removing_any_dot_git_path() {
+        // All `.git*` entries already listed in the maintainer's
+        // .gitattributes are treated as intentional and never flagged stale,
+        // even when the file/dir doesn't exist upstream. This includes
+        // `.github` — having the rule there protects against the directory
+        // reappearing later (workflows, issue templates).
+        let mut excluded = HashSet::new();
+        excluded.insert(".gitattributes".to_string());
+        excluded.insert(".gitignore".to_string());
+        excluded.insert(".gitkeep".to_string());
+        excluded.insert(".gitmodules".to_string());
+        excluded.insert(".github".to_string());
+        excluded.insert(".git-blame-ignore-revs".to_string());
+        excluded.insert("phpunit.xml".to_string());
+        // Everything is missing, except phpunit.xml.
+        let stale = detect_stale_entries(&excluded, |p| p == "phpunit.xml");
+        assert!(
+            stale.is_empty(),
+            "no .git* entry should be flagged stale, got: {:?}",
+            stale
+        );
+    }
+
+    #[test]
+    fn is_defensive_git_path_matches_all_dot_git_prefixes() {
+        assert!(is_defensive_git_path(".gitattributes"));
+        assert!(is_defensive_git_path(".gitignore"));
+        assert!(is_defensive_git_path(".gitkeep"));
+        assert!(is_defensive_git_path(".gitmodules"));
+        assert!(is_defensive_git_path(".git-blame-ignore-revs"));
+        assert!(is_defensive_git_path(".github"));
+        assert!(is_defensive_git_path(".github/workflows"));
+        // Non-.git paths aren't defensive
+        assert!(!is_defensive_git_path("tests"));
+        assert!(!is_defensive_git_path("phpunit.xml"));
+    }
+
+    #[test]
+    fn detect_stale_entries_skips_glob_patterns() {
+        // `/*`, `/*.dat`, `*/.gitattributes` are valid patterns in
+        // .gitattributes but the contents API can't resolve them. Don't flag.
+        let mut excluded = HashSet::new();
+        excluded.insert("*".to_string());
+        excluded.insert("*.dat".to_string());
+        excluded.insert("phpbench-*.xml".to_string());
+        excluded.insert("foo[Bb]ar".to_string());
+        excluded.insert("dir?".to_string());
+        excluded.insert("real-stale".to_string());
+        let stale = detect_stale_entries(&excluded, |p| p != "real-stale");
+        // Only "real-stale" should be reported.
+        assert_eq!(stale.len(), 1);
+        assert_eq!(stale[0].line, "/real-stale export-ignore");
     }
 
     #[test]
