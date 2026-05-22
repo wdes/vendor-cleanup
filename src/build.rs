@@ -63,7 +63,11 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     ".travis.yml",
     "appveyor.yml",
     ".gitlab-ci.yml",
+    // Codecov officially supports `codecov.yml` and `.codecov.yml` only
+    // (in repo root, dev/, or .github/). See:
+    // https://docs.codecov.com/docs/codecov-yaml
     "codecov.yml",
+    ".codecov.yml",
     "Makefile",
     "CONTRIBUTING.md",
     "CLAUDE.md",
