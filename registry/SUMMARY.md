@@ -1,16 +1,16 @@
 # williamdes cleanup PRs summary
 
-Generated: 2026-05-21
+Generated: 2026-05-22
 
 ## Totals
 
-- Total PRs touching `.gitattributes`: **87**
-  - merged: 69
+- Total PRs touching `.gitattributes`: **88**
+  - merged: 70
   - closed: 11
   - open: 7
-- Total bytes saved (merged PRs): **11,350,889 B** (10.83 MB)
+- Total bytes saved (merged PRs): **11,361,500 B** (10.84 MB)
   - of which on own / phpmyadmin repos: 8,098,156 B
-  - of which on third-party packages: **3,252,733 B** (3.10 MB)
+  - of which on third-party packages: **3,263,344 B** (3.11 MB)
 
 ## Top 20 by savings
 

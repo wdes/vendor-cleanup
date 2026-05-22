@@ -42,6 +42,8 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     "benchmarks",
     ".github",
     ".phpdoc",
+    ".run",   // PhpStorm run configurations (e.g. .run/phpunit.run.xml)
+    ".idea",  // PhpStorm project metadata (only if committed, usually .gitignored)
     "guides",
     // files
     "phpunit.xml",
@@ -53,6 +55,10 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     "phpstan.neon",
     "phpstan.neon.dist",
     "phpstan-baseline.neon",
+    "phpbench.json",
+    "phpbench.json.dist",
+    "phpunit.run.xml",
+    "rector.php",
     ".php-cs-fixer.php",
     ".php-cs-fixer.dist.php",
     ".php_cs",
@@ -72,6 +78,7 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     "CONTRIBUTING.md",
     "CLAUDE.md",
     "AGENTS.md",
+    "META.md",
     ".phpstorm.meta.php",
     "splitsh.json",
 ];
@@ -126,6 +133,28 @@ fn strip_slashes_str(s: &str) -> String {
 /// `export-ignore`d.
 pub fn parsed_excluded_paths_from_gitattributes(text: &str) -> HashSet<String> {
     let re = Regex::new(r"^\s*/?([^\s]+?)/?\s+export-ignore\s*$").unwrap();
+    let mut out = HashSet::new();
+    for line in text.lines() {
+        // Skip comment lines: lines starting with `#` (possibly after leading whitespace).
+        if line.trim_start().starts_with('#') {
+            continue;
+        }
+        if let Some(caps) = re.captures(line) {
+            out.insert(caps[1].to_string());
+        }
+    }
+    out
+}
+
+/// Parse an upstream `.gitattributes` content and return the set of
+/// paths that appear in COMMENTED-OUT `export-ignore` lines. These
+/// represent an intentional decision by the maintainer NOT to exclude
+/// the path (otherwise they would have removed the line entirely). We
+/// must NOT propose adding them as new entries.
+pub fn parsed_commented_paths_from_gitattributes(text: &str) -> HashSet<String> {
+    // Match an `export-ignore` line that starts with `#` (with optional
+    // whitespace before/after the comment marker).
+    let re = Regex::new(r"^\s*#+\s*/?([^\s#]+?)/?\s+export-ignore\s*$").unwrap();
     let mut out = HashSet::new();
     for line in text.lines() {
         if let Some(caps) = re.captures(line) {
@@ -342,15 +371,26 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
         .ok_or_else(|| anyhow!("no default_branch for {slug}"))?
         .to_string();
 
-    // Fetch existing upstream .gitattributes (if any) to know what's already excluded.
-    let (last_ga_ref, already_excluded, create) = fetch_gitattributes_state(slug, &branch)?;
+    // Fetch existing upstream .gitattributes (if any) to know what's already
+    // excluded AND what's intentionally commented-out (do not propose).
+    let state = fetch_gitattributes_state(slug, &branch)?;
+    let last_ga_ref = state.last_ref;
+    let already_excluded = state.excluded;
+    let commented_out = state.commented;
+    let create = state.create;
 
-    // For each candidate, drop if already excluded, then check upstream existence,
+    // For each candidate, drop if already excluded, drop if maintainer
+    // commented the line out on purpose, then check upstream existence,
     // then fetch the last commit ref that touched it.
     let mut entries: Vec<Entry> = Vec::new();
     for cand in candidates {
         let norm = cand.trim_start_matches('/').trim_end_matches('/');
         if already_excluded.contains(norm) {
+            continue;
+        }
+        if commented_out.contains(norm) {
+            // Maintainer wrote `#/foo export-ignore` instead of `/foo export-ignore`
+            // -> intentional opt-out. Don't propose.
             continue;
         }
         if !upstream_path_exists(slug, &branch, norm)? {
@@ -415,15 +455,25 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
     }))
 }
 
-/// Return `(last_gitattributes_ref, already_excluded_paths, create_if_missing)`.
-fn fetch_gitattributes_state(
-    slug: &str,
-    branch: &str,
-) -> Result<(Option<String>, HashSet<String>, bool)> {
+/// Parsed state of the upstream `.gitattributes`.
+struct GitattributesState {
+    /// Last commit ref + date that touched `.gitattributes`, when one exists.
+    last_ref: Option<String>,
+    /// Paths declared with `export-ignore` (uncommented lines only).
+    excluded: HashSet<String>,
+    /// Paths declared with `export-ignore` on a COMMENTED-OUT line.
+    /// Treat these as intentional opt-outs: don't re-propose.
+    commented: HashSet<String>,
+    /// True when no `.gitattributes` exists upstream yet.
+    create: bool,
+}
+
+fn fetch_gitattributes_state(slug: &str, branch: &str) -> Result<GitattributesState> {
     // Fetch the file contents (base64) via the contents API.
     let path = format!("repos/{slug}/contents/.gitattributes?ref={branch}");
     let resp = github::gh_api_json(&[&path]);
     let mut excluded: HashSet<String> = HashSet::new();
+    let mut commented: HashSet<String> = HashSet::new();
     let create = match resp {
         Err(_) => true,
         Ok(v) => {
@@ -432,6 +482,7 @@ fn fetch_gitattributes_state(
                 if let Ok(bytes) = base64_decode(&cleaned) {
                     if let Ok(text) = String::from_utf8(bytes) {
                         excluded = parsed_excluded_paths_from_gitattributes(&text);
+                        commented = parsed_commented_paths_from_gitattributes(&text);
                     }
                 }
                 false
@@ -449,7 +500,12 @@ fn fetch_gitattributes_state(
             last_ga = commit_summary_first(&arr);
         }
     }
-    Ok((last_ga, excluded, create))
+    Ok(GitattributesState {
+        last_ref: last_ga,
+        excluded,
+        commented,
+        create,
+    })
 }
 
 fn last_touch_ref(slug: &str, branch: &str, path: &str) -> Result<Option<String>> {
@@ -584,6 +640,38 @@ mod tests {
     fn composer_source_none_when_no_github_url() {
         let c = json!({"homepage": "https://example.com"});
         assert_eq!(parse_composer_source(&c), None);
+    }
+
+    #[test]
+    fn parsed_excluded_ignores_commented_out_lines() {
+        let text = "\
+/tests export-ignore
+#/.phpcs.xml.dist export-ignore
+   #  /examples export-ignore
+/CONTRIBUTING.md export-ignore
+";
+        let set = parsed_excluded_paths_from_gitattributes(text);
+        assert!(set.contains("tests"));
+        assert!(set.contains("CONTRIBUTING.md"));
+        assert!(!set.contains(".phpcs.xml.dist"), "commented-out path must NOT be in excluded set");
+        assert!(!set.contains("examples"), "commented-out path must NOT be in excluded set");
+    }
+
+    #[test]
+    fn parsed_commented_collects_commented_paths() {
+        let text = "\
+/tests export-ignore
+#/.phpcs.xml.dist export-ignore
+   #/examples export-ignore
+## /docs export-ignore
+/CONTRIBUTING.md export-ignore
+";
+        let set = parsed_commented_paths_from_gitattributes(text);
+        assert!(set.contains(".phpcs.xml.dist"));
+        assert!(set.contains("examples"));
+        assert!(set.contains("docs"), "should accept multiple `#` markers (## /docs)");
+        assert!(!set.contains("tests"), "non-commented path must NOT be in commented set");
+        assert!(!set.contains("CONTRIBUTING.md"));
     }
 
     #[test]
