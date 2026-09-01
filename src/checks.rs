@@ -11,10 +11,17 @@ use chrono::Datelike;
 /// Repos where the maintainer has signalled they don't welcome our
 /// `.gitattributes` cleanup contributions. Skip both scanning and PR
 /// opening for these.
-const DENYLISTED_REPOS: &[(&str, &str)] = &[(
-    "mockery/mockery",
-    "maintainer pushed back on our prior cleanup changes",
-)];
+const DENYLISTED_REPOS: &[(&str, &str)] = &[
+    (
+        "mockery/mockery",
+        "maintainer pushed back on our prior cleanup changes",
+    ),
+    (
+        "maennchen/ZipStream-PHP",
+        "maintainer has closed every export-ignore PR (#216, #339, #422); \
+         they want the GitHub source download to keep shipping tests",
+    ),
+];
 
 /// Returns Some(reason) when `repo` is on the static denylist. Match is
 /// case-insensitive against `OWNER/REPO`.
@@ -164,5 +171,12 @@ mod tests {
         // Not on list
         assert!(denylisted_repo("phar-io/manifest").is_none());
         assert!(denylisted_repo("getsentry/sentry-laravel").is_none());
+    }
+
+    /// The maintainer closed #216, #339 and #422; we must never re-propose.
+    #[test]
+    fn denylist_skips_zipstream() {
+        assert!(denylisted_repo("maennchen/ZipStream-PHP").is_some());
+        assert!(denylisted_repo("maennchen/zipstream-php").is_some());
     }
 }
