@@ -19,7 +19,7 @@
 //! .gitattributes for excluded paths, scanning a vendor dir) are unit
 //! tested independently.
 
-use crate::config::{Config, Defaults, Entry, RemoveEntry, Target};
+use crate::config::{Config, Defaults, Entry, RemoveEntry, SkippedRepo, Target};
 use crate::github;
 use anyhow::{anyhow, Context, Result};
 use regex::Regex;
@@ -334,10 +334,35 @@ pub fn build(args: BuildArgs) -> Result<()> {
 
     // Step 2: enrich each pair into a Target.
     let mut targets: Vec<Target> = Vec::new();
+    let mut skipped: Vec<SkippedRepo> = Vec::new();
     for (slug, candidates) in pairs {
+        // Repos we already know won't take the change: warn loudly and record
+        // them in `skipped:` rather than emitting a target we'd refuse to act
+        // on at `run` time anyway.
         if let Some(reason) = crate::checks::denylisted_repo(&slug) {
-            eprintln!("  - {slug}: skipped (denylisted: {reason})");
+            eprintln!("  ! {slug}: upstream refuses .gitattributes updates - {reason}");
+            skipped.push(SkippedRepo {
+                repo: slug,
+                reason: format!("Denylisted: {reason}. Do not re-propose."),
+            });
             continue;
+        }
+        match crate::checks::rejection_history(&slug, &args.user_login, 5) {
+            Ok(Some(reason)) => {
+                eprintln!(
+                    "  ! {slug}: upstream refuses .gitattributes updates - {reason} \
+                     (not proposing; move it back under `targets:` to override)"
+                );
+                skipped.push(SkippedRepo {
+                    repo: slug,
+                    reason: format!("A maintainer closed a similar .gitattributes PR: {reason}."),
+                });
+                continue;
+            }
+            Ok(None) => {}
+            // A failed history lookup (rate limit, private repo, gh hiccup) must
+            // not silently look like "no rejections" - say so and carry on.
+            Err(e) => eprintln!("  ? {slug}: rejection-history check failed ({e:#})"),
         }
         match build_one_target(&slug, &candidates) {
             Ok(Some(t)) => {
@@ -363,12 +388,19 @@ pub fn build(args: BuildArgs) -> Result<()> {
             sleep_max: 20,
         },
         targets,
-        skipped: Vec::new(),
+        skipped,
     };
     let yaml = serde_yaml::to_string(&cfg)?;
     std::fs::write(&args.output, yaml)
         .with_context(|| format!("writing {}", args.output.display()))?;
     eprintln!("Wrote {}", args.output.display());
+    if !cfg.skipped.is_empty() {
+        eprintln!(
+            "WARNING: {} repo(s) landed in `skipped:` because upstream refuses \
+             .gitattributes updates - review before running.",
+            cfg.skipped.len()
+        );
+    }
     Ok(())
 }
 
