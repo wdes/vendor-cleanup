@@ -30,6 +30,10 @@ use std::path::{Path, PathBuf};
 /// Default candidates considered as dev/tooling files that don't belong
 /// in a composer dist. Used when scanning by repo name only (no
 /// vendor/ tree to inspect). Order matters: kept stable for review.
+/// Deliberately NOT candidates, even though they're arguably dev-only:
+///   - `CHANGELOG.md` / `UPGRADE.md`: consumers read these from `vendor/`.
+///   - `Dockerfile`: for some packages the image *is* the product.
+///   - `.phpunit.result.cache`, `.phpunit.cache/`: normally gitignored.
 pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     // folders
     "tests",
@@ -40,42 +44,112 @@ pub const DEFAULT_DEV_CANDIDATES: &[&str] = &[
     "doc",
     "benchmark",
     "benchmarks",
+    "spec", // phpspec
     ".github",
     ".phpdoc",
+    ".phive", // PHIVE phar manifests (.phive/phars.xml)
     ".run",   // PhpStorm run configurations (e.g. .run/phpunit.run.xml)
     ".idea",  // PhpStorm project metadata (only if committed, usually .gitignored)
+    ".vscode",
+    ".devcontainer",
+    ".circleci",
     "guides",
-    // files
+    // files: test runners
     "phpunit.xml",
     "phpunit.xml.dist",
-    "psalm.xml",
-    "psalm.xml.dist",
-    "phpcs.xml",
-    "phpcs.xml.dist",
-    "phpstan.neon",
-    "phpstan.neon.dist",
-    "phpstan-baseline.neon",
+    "phpunit.dist.xml", // PHPUnit 10+ preferred spelling
+    "phpunit.run.xml",
     "phpbench.json",
     "phpbench.json.dist",
-    "phpunit.run.xml",
+    "infection.json",
+    "infection.json5",
+    "infection.json.dist",
+    "behat.yml",
+    "behat.yml.dist",
+    // files: static analysis / coding standards
+    "psalm.xml",
+    "psalm.xml.dist",
+    "psalm-baseline.xml",
+    "phpcs.xml",
+    "phpcs.xml.dist",
+    ".phpcs.xml",
+    ".phpcs.xml.dist",
+    "phpstan.neon",
+    "phpstan.neon.dist",
+    "phpstan.dist.neon",
+    "phpstan-baseline.neon",
+    "phpmd.xml",
+    "phpmd.xml.dist",
+    ".phpmd.xml",
     "rector.php",
+    "ecs.php",
+    "deptrac.yaml",
+    "deptrac.yml",
+    "phpinsights.php",
     ".php-cs-fixer.php",
     ".php-cs-fixer.dist.php",
     ".php_cs",
     ".php_cs.dist",
-    "infection.json.dist",
+    // files: docs generators
+    "phpdoc.xml",
+    "phpdoc.xml.dist",
+    "phpdoc.dist.xml",
+    "mkdocs.yml",
+    "doctum.php",
+    ".doctum.php",
+    ".readthedocs.yaml",
+    ".readthedocs.yml",
+    // files: toolchain / dev environment pinning
+    ".tool-versions", // asdf / mise
+    ".mise.toml",
+    "mise.toml",
+    ".php-version",
+    "phive.xml",
+    "box.json",
+    "box.json.dist",
+    "captainhook.json",
+    "grumphp.yml",
+    "grumphp.yml.dist",
+    ".pre-commit-config.yaml",
+    ".envrc",
+    "Vagrantfile",
+    "docker-compose.yml",
+    "docker-compose.yaml",
+    "compose.yml",
+    "compose.yaml",
+    ".dockerignore",
+    // files: CI services
     ".editorconfig",
     ".scrutinizer.yml",
+    ".styleci.yml",
     ".travis.yml",
     "appveyor.yml",
+    ".appveyor.yml",
     ".gitlab-ci.yml",
+    ".drone.yml",
+    "azure-pipelines.yml",
+    "bitbucket-pipelines.yml",
+    "Jenkinsfile",
+    ".gitpod.yml",
+    "sonar-project.properties",
+    ".sonarcloud.properties",
+    "renovate.json",
+    ".renovaterc",
+    ".renovaterc.json",
     // Codecov officially supports `codecov.yml` and `.codecov.yml` only
     // (in repo root, dev/, or .github/). See:
     // https://docs.codecov.com/docs/codecov-yaml
     "codecov.yml",
     ".codecov.yml",
+    // files: misc project metadata
     "Makefile",
+    "justfile",
+    "Justfile",
+    "Taskfile.yml",
+    ".mailmap",
     "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
     "CLAUDE.md",
     "AGENTS.md",
     "META.md",
@@ -762,6 +836,58 @@ mod tests {
         assert!(files.contains("tests"));
         assert!(files.contains(".github"));
         assert!(files.contains("phpunit.xml.dist"));
+    }
+
+    /// Regression: a ZipStream-PHP build only proposed 7 of the 10 dev
+    /// paths in its root because these were missing from the candidate set.
+    #[test]
+    fn candidates_cover_toolchain_and_docs_config() {
+        let set: HashSet<&str> = DEFAULT_DEV_CANDIDATES.iter().copied().collect();
+        for want in [
+            ".tool-versions",
+            ".phive",
+            ".phpdoc",
+            "phpdoc.dist.xml",
+            "phive.xml",
+            "psalm-baseline.xml",
+            "ecs.php",
+            "captainhook.json",
+            ".pre-commit-config.yaml",
+            "SECURITY.md",
+            "CODE_OF_CONDUCT.md",
+        ] {
+            assert!(set.contains(want), "{want} missing from candidates");
+        }
+    }
+
+    /// Files consumers legitimately read out of `vendor/`, or that are the
+    /// package's actual deliverable, must never be proposed for exclusion.
+    #[test]
+    fn candidates_exclude_consumer_facing_files() {
+        let set: HashSet<&str> = DEFAULT_DEV_CANDIDATES.iter().copied().collect();
+        for unwanted in [
+            "CHANGELOG.md",
+            "UPGRADE.md",
+            "README.md",
+            "LICENSE",
+            "composer.json",
+            "src",
+            "Dockerfile",
+        ] {
+            assert!(!set.contains(unwanted), "{unwanted} must not be a candidate");
+        }
+    }
+
+    #[test]
+    fn candidates_have_no_duplicates() {
+        let mut seen: HashSet<&str> = HashSet::new();
+        for c in DEFAULT_DEV_CANDIDATES {
+            assert!(seen.insert(c), "duplicate candidate: {c}");
+            assert!(
+                !c.starts_with('/') && !c.ends_with('/'),
+                "candidate {c} must be a bare path with no slashes"
+            );
+        }
     }
 
     #[test]
