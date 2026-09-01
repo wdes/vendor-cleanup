@@ -20,7 +20,10 @@ is the supported fix; this tool batches the PR-opening across many libraries.
 ## Features
 
 - **Rejection-history check**: skip the repo if a non-author closed a similar
-  PR in the last 5 years (catches maintainers who said no before).
+  PR in the last 5 years (catches maintainers who said no before). `build`
+  runs it too, so refusing repos are warned about on stderr and land in the
+  emitted `skipped:` list instead of `targets:`; move one back under
+  `targets:` by hand to override.
 - **Upstream existence check**: drop entries whose paths no longer exist in
   upstream HEAD (catches stale-rename false positives like `phpunit.xml` ->
   `phpunit.xml.dist`).
@@ -34,6 +37,11 @@ is the supported fix; this tool batches the PR-opening across many libraries.
   campaign.
 - **Idempotent**: skip repos where a PR already exists on the same head branch.
 - **Skip list with reasons**: track repos that maintainers won't accept.
+- **Broad dev-file detection**: ~110 default candidates covering test runners,
+  static analysis, docs generators (`phpdoc.dist.xml`, `.phpdoc/`), toolchain
+  pinning (`.tool-versions`, `.phive/`, `phive.xml`, `.mise.toml`), CI services
+  and dev-environment files. Files consumers legitimately read out of
+  `vendor/` (`CHANGELOG.md`, `UPGRADE.md`) are deliberately never proposed.
 
 ## Install
 
@@ -179,7 +187,7 @@ on the roadmap.
 
 ```bash
 cargo build
-cargo test            # 37 tests (unit + integration)
+cargo test            # 77 tests (unit + integration)
 cargo clippy --all-targets -- -D warnings
 ```
 
