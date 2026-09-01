@@ -66,7 +66,9 @@ fn process_target(t: &Target, cfg: &Config, go: bool) -> Result<Outcome> {
 
     // 1. Repo denylist (maintainers who pushed back on past contributions)
     if let Some(reason) = checks::denylisted_repo(&t.repo) {
-        return Ok(Outcome::Skipped(format!("denylisted: {reason}")));
+        return Ok(Outcome::Skipped(format!(
+            "upstream refuses .gitattributes updates (denylisted) - {reason}"
+        )));
     }
 
     // 2. Idempotency
@@ -77,7 +79,9 @@ fn process_target(t: &Target, cfg: &Config, go: bool) -> Result<Outcome> {
 
     // 3. Rejection-history check
     if let Some(reason) = checks::rejection_history(&t.repo, &cfg.defaults.user_login, 5)? {
-        return Ok(Outcome::Skipped(format!("rejection history: {reason}")));
+        return Ok(Outcome::Skipped(format!(
+            "upstream refuses .gitattributes updates - {reason}"
+        )));
     }
 
     // 3. Upstream existence check
