@@ -24,7 +24,7 @@ use crate::github;
 use anyhow::{anyhow, Context, Result};
 use regex::Regex;
 use serde_json::Value;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
 /// Default candidates considered as dev/tooling files that don't belong
@@ -496,6 +496,10 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
     let commented_out = state.commented;
     let create = state.create;
 
+    // One listing of the repo root answers "exists?" and "is it a dir?"
+    // for every root-level candidate, instead of two API calls each.
+    let root = fetch_root_listing(slug, &branch);
+
     // For each candidate, drop if already excluded, drop if maintainer
     // commented the line out on purpose, then check upstream existence,
     // then fetch the last commit ref that touched it.
@@ -510,13 +514,21 @@ fn build_one_target(slug: &str, candidates: &[String]) -> Result<Option<Target>>
             // -> intentional opt-out. Don't propose.
             continue;
         }
-        if !upstream_path_exists(slug, &branch, norm)? {
-            continue;
-        }
-        let r#ref = last_touch_ref(slug, &branch, norm)?.unwrap_or_else(|| "unknown".into());
         // Use the trailing-slash style by checking dir/file. Files: no trailing slash.
         // Directories: add trailing slash for readability.
-        let is_dir = upstream_is_dir(slug, &branch, norm).unwrap_or(false);
+        let is_dir = match root.as_ref().filter(|_| !norm.contains('/')) {
+            Some(listing) => match listing.get(norm) {
+                Some(is_dir) => *is_dir,
+                None => continue,
+            },
+            None => {
+                if !upstream_path_exists(slug, &branch, norm)? {
+                    continue;
+                }
+                upstream_is_dir(slug, &branch, norm).unwrap_or(false)
+            }
+        };
+        let r#ref = last_touch_ref(slug, &branch, norm)?.unwrap_or_else(|| "unknown".into());
         let line = if is_dir {
             format!("/{norm}/ export-ignore")
         } else {
@@ -629,6 +641,23 @@ fn last_touch_ref(slug: &str, branch: &str, path: &str) -> Result<Option<String>
     let path_q = format!("repos/{slug}/commits?path={path}&sha={branch}&per_page=1");
     let v = github::gh_api_json(&[&path_q])?;
     Ok(commit_summary_first(&v))
+}
+
+/// Listing of the repo root at `branch`: entry name -> is it a directory.
+/// Returns None when the listing can't be fetched, in which case callers
+/// fall back to per-path contents lookups. Matching is case-sensitive, so
+/// `Tests` and `tests` stay distinct candidates.
+fn fetch_root_listing(slug: &str, branch: &str) -> Option<HashMap<String, bool>> {
+    let v = github::gh_api_json(&[&format!("repos/{slug}/contents/?ref={branch}")]).ok()?;
+    let mut out = HashMap::new();
+    for e in v.as_array()? {
+        let Some(name) = e.get("name").and_then(|s| s.as_str()) else {
+            continue;
+        };
+        let is_dir = e.get("type").and_then(|s| s.as_str()) == Some("dir");
+        out.insert(name.to_string(), is_dir);
+    }
+    Some(out)
 }
 
 fn upstream_path_exists(slug: &str, branch: &str, path: &str) -> Result<bool> {
